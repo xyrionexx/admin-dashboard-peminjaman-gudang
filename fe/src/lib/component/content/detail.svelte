@@ -3,88 +3,69 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
 	import { onMount, createEventDispatcher } from 'svelte';
-	import QrCode from './data/qrcode.svelte';
+
+	// interface DetailPeminjaman {
+	// 	kode_pinjam: string;
+	// 	nis: string;
+	// 	nuptk: string;
+	// 	id_pegawai: string;
+	// 	tanggal_pinjam: string;
+	// 	tanggal_kembali: string;
+	// 	status_pinjam: 'Sedang Diambil' | 'Masih Dipinjam' | 'Dibatalkan' | 'Selesai';
+	// }
+
 	const dispatch = createEventDispatcher<{ pageChange: { page: string; id?: number } }>();
 
-	interface Peminjaman {
-		kode_pinjam: string;
-		nis: string;
-		nuptk: string;
-		id_pegawai: string;
-		tanggal_pinjam: string;
-		tanggal_kembali: string;
-		status_pinjam: 'Sedang Diambil' | 'Masih Dipinjam' | 'Dibatalkan' | 'Selesai';
-	}
-
-	let peminjaman: any[] = $state([]);
+	let DetailPeminjaman: any[] = $state([]);
 	let barang: any = {};
 	let totalStok = 0;
 	let totalBarang = $state(0);
-	let totalPeminjaman = $state(0);
+	let totalDetailPeminjaman = $state(0);
 
 	onMount(async () => {
 		try {
-			const [resPeminjaman, resSummary] = await Promise.all([
-				fetch('http://127.0.0.1:8000/api/peminjaman/'),
+			const [resDetailPeminjaman, resSummary] = await Promise.all([
+				fetch('http://127.0.0.1:8000/api/detail/peminjaman'),
 				fetch('http://127.0.0.1:8000/api/barang/summary')
 			]);
-			if (!resPeminjaman.ok || !resSummary.ok) {
+			if (!resDetailPeminjaman.ok || !resSummary.ok) {
 				throw new Error('Gagal ambil data');
 			}
-			peminjaman = await resPeminjaman.json();
+			DetailPeminjaman = await resDetailPeminjaman.json();
 			barang = await resSummary.json();
 			totalStok = barang.total_stok;
 			totalBarang = barang.total_barang;
-			totalPeminjaman = peminjaman.length;
-			console.log(peminjaman);
+			totalDetailPeminjaman = DetailPeminjaman.length;
 		} catch (err) {
 			console.log(err);
 		}
 	});
 
 	let searchTerm = $state<string>('');
+	let peminjamanSelesai: any[] = [];
 
 	let filteredUsers = $derived(
-		peminjaman.filter(
+		DetailPeminjaman.filter(
 			(user) =>
-				user.nis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				user.kode_pinjam.toLowerCase().includes(searchTerm.toLowerCase())
+				user.kode_detail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				user.id_peminjaman.toLowerCase().includes(searchTerm.toLowerCase())
 		)
 	);
 
 	const totalData = $derived(() => filteredUsers.length);
 
 	function getStatusColor(
-		status: 'Sedang Diambil' | 'Masih Dipinjam' | 'Dibatalkan' | 'Selesai'
+		status: 'Sudah Dikembalikan' | 'Belum Dikembalikan' | 'Terlambat'
 	): string {
 		switch (status) {
-			case 'Sedang Diambil':
+			case 'Belum Dikembalikan':
 				return 'bg-yellow-100 text-yellow-700';
-			case 'Masih Dipinjam':
-				return 'bg-blue-100 text-blue-700';
-			case 'Selesai':
+			case 'Sudah Dikembalikan':
 				return 'bg-green-100 text-green-700';
-			case 'Dibatalkan':
+			case 'Terlambat':
 				return 'bg-red-100 text-red-700';
 			default:
 				return 'bg-gray-100 text-gray-700';
-		}
-	}
-
-	function getStatusText(
-		status: 'Sedang Diambil' | 'Masih Dipinjam' | 'Dibatalkan' | 'Selesai'
-	): string {
-		switch (status) {
-			case 'Sedang Diambil':
-				return 'Dipinjam';
-			case 'Masih Dipinjam':
-				return 'Aktid';
-			case 'Selesai':
-				return 'Selesai';
-			case 'Dibatalkan':
-				return 'Dibatalkan';
-			default:
-				return 'Uknown';
 		}
 	}
 
@@ -125,7 +106,7 @@
 	<div class="mx-auto max-w-6xl">
 		<!-- Header -->
 		<div class="mb-8">
-			<h1 class="mb-2 text-3xl font-bold text-gray-800">Dashboard Peminjaman Barang</h1>
+			<h1 class="mb-2 text-3xl font-bold text-gray-800">Dashboard Detail Peminjaman Barang</h1>
 			<p class="text-gray-600">Kelola peminjaman barang sekolah dengan mudah</p>
 		</div>
 
@@ -149,8 +130,8 @@
 						</svg>
 					</div>
 					<div class="ml-4">
-						<p class="text-sm font-medium text-gray-600">Total Barang</p>
-						<p class="text-2xl font-bold text-gray-900">{totalBarang}</p>
+						<p class="text-sm font-medium text-gray-600">Total Sudah Dikembalikan</p>
+						<p class="text-2xl font-bold text-gray-900">{peminjamanSelesai}</p>
 					</div>
 				</div>
 			</div>
@@ -173,8 +154,8 @@
 						</svg>
 					</div>
 					<div class="ml-4">
-						<p class="text-sm font-medium text-gray-600">Sedang Dipinjam</p>
-						<p class="text-2xl font-bold text-gray-900">{totalPeminjaman}</p>
+						<p class="text-sm font-medium text-gray-600">Sedang Belum Dikembalikan</p>
+						<p class="text-2xl font-bold text-gray-900"></p>
 					</div>
 				</div>
 			</div>
@@ -208,7 +189,7 @@
 		<div class="rounded-lg border border-gray-200 bg-white shadow-sm">
 			<div class="border-b border-gray-200 p-6">
 				<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-					<h2 class="text-lg font-semibold text-gray-800">Daftar Peminjaman</h2>
+					<h2 class="text-lg font-semibold text-gray-800">Daftar Detail Peminjaman</h2>
 					<div class="relative">
 						<input
 							type="text"
@@ -238,74 +219,74 @@
 					<thead class="bg-gray-50">
 						<tr>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Kode Pinjam</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Kode Detail Pinjam</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>NIS</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>ID Peminjaman</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>NUPTK</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>ID Barang</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>id_pegawai</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Jumlah</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Tanggal Pinjam</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Waktu Pengambilan</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Tanggal Kembali</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Batas Ambil</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Status Pinjam</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Status Pengambilan</th
 							>
 							<th
-								class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Lihat Data</th
+								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								>Lihat Detail Data</th
 							>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200 bg-white">
 						{#each paginatedUser() as user}
 							<tr class="transition-colors hover:bg-gray-50">
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm font-medium text-gray-900">{user.kode_pinjam}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm font-medium text-gray-900">{user.kode_detail}</div>
 								</td>
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm text-gray-600">{user.nis}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-600">{user.id_peminjaman}</div>
 								</td>
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm text-gray-600">{user.nuptk}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-600">{user.id_barang}</div>
 								</td>
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm text-gray-600">{user.id_pegawai}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-600">{user.jumlah}</div>
 								</td>
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm text-gray-600">{formatDate(user.tanggal_pinjam)}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-600">{formatDate(user.waktu_pengambilan)}</div>
 								</td>
-								<td class="whitespace-nowrap px-5 py-4">
-									<div class="text-sm text-gray-600">{formatDate(user.tanggal_kembali)}</div>
+								<td class="whitespace-nowrap px-6 py-4">
+									<div class="text-sm text-gray-600">{formatDate(user.batas_ambil)}</div>
 								</td>
 								<td class="rounded-4xl whitespace-nowrappy-4">
 									<div>
-										<Badge class={`${getStatusColor(user.status_pinjam)} rounded-2xl`}>
-											{user.status_pinjam}
+										<Badge class={`${getStatusColor(user.status_pengambilan)} rounded-2xl`}>
+											{user.status_pengambilan}
 										</Badge>
 									</div>
 								</td>
-								<td>
+								<td class="whitespace-nowrap px-6 py-4">
 									<button
 										onclick={() =>
-											dispatch('pageChange', { page: 'DetailDashboard', id: user.kode_pinjam })}
+											dispatch('pageChange', { page: 'DetailPeminjaman', id: user.kode_detail })}
 										>Lihat Data</button
-									></td
-								>
+									>
+								</td>
 							</tr>
 						{/each}
 					</tbody>
