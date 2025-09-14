@@ -1,27 +1,44 @@
 <script lang="ts">
 	import Sidebar from '$lib/component/sidebars.svelte';
-	import Dashboard from '$lib/component/content/dashboard.svelte';
-	import Analytics from '$lib/component/content/Analytics.svelte';
-	import Users from '$lib/component/content/Users.svelte';
-	import Products from '$lib/component/content/Products.svelte';
+	import Aktivitas from '$lib/component/content/dashboard.svelte';
+	import Analisis from '$lib/component/content/Analytics.svelte';
+	import Pengguna from '$lib/component/content/user.svelte';
 	import Barang from '$lib/component/content/barang.svelte';
-	import Reports from '$lib/component/content/Reports.svelte';
-	import Settings from '$lib/component/content/Settings.svelte';
+	import Laporan from '$lib/component/content/Reports.svelte';
+	import Pengaturan from '$lib/component/content/Settings.svelte';
+	import TambahBarang from '$lib/tambah/tambahbarang.svelte';
+	import TambahUser from '$lib/tambah/tambahUser.svelte';
+	import Update from '../update/update.svelte';
+	import Detail from '$lib/component/content/detail.svelte';
+	import DetailDashboard from '$lib/detailStatus/detailDashboard.svelte';
+	import Scanqr from '$lib/component/content/scanqr.svelte';
+	import DetailPeminjaman from '$lib/detailStatus/detailPeminjaman.svelte';
+	import ScanPengembalian from '$lib/component/content/scanpengembalian.svelte';
+
 	import type { Component } from 'svelte';
 
 	let sidebarCollapsed: boolean = $state(false);
 	let mobileMenuOpen: boolean = $state(false);
-	let activePage: string = $state('Dashboard');
+	let activePage: string = $state('Aktivitas');
 
 	const pageComponents: Record<string, Component<any>> = {
-		Dashboard,
-		Analytics,
-		Users,
-		Products,
+		Aktivitas,
+		Analisis,
+		Pengguna,
 		Barang,
-		Reports,
-		Settings
+		Laporan,
+		Pengaturan,
+		TambahBarang,
+		TambahUser,
+		Update,
+		Detail,
+		DetailDashboard,
+		Scanqr,
+		ScanPengembalian,
+		DetailPeminjaman
 	};
+	let selectedBarangId = $state<undefined | number>(undefined);
+	const SelectedComponent = $derived<Component<any>>(pageComponents[activePage]);
 
 	function toggleSidebar(): void {
 		sidebarCollapsed = !sidebarCollapsed;
@@ -39,8 +56,6 @@
 		activePage = pageName;
 		closeMobileMenu();
 	}
-
-	let SvelteComponent: Component<any> = $derived(pageComponents[activePage]);
 </script>
 
 <div class="flex h-screen bg-gray-50">
@@ -94,11 +109,19 @@
 			</div>
 		</header>
 
-		<!-- Dynamic component rendering based on active page -->
+		<!-- Dynamic component rendering -->
 		<main class="flex-1 overflow-auto p-6">
-			{#if SvelteComponent}
-				<SvelteComponent />
-			{/if}
+			<SelectedComponent
+				{...activePage === 'Update' ||
+				activePage === 'DetailDashboard' ||
+				activePage === 'DetailPeminjaman'
+					? { id: selectedBarangId }
+					: {}}
+				on:pageChange={(e: CustomEvent<{ page: string; id?: number }>) => {
+					activePage = e.detail.page;
+					selectedBarangId = e.detail.id;
+				}}
+			/>
 		</main>
 	</div>
 </div>
