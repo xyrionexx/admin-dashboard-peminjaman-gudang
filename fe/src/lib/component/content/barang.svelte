@@ -502,7 +502,7 @@
 						<Pagination.Root count={totalData()} {perPage} bind:page={currentPage}>
 							{#snippet children({ pages, currentPage })}
 								<nav class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm">
-									<Pagination.Item>
+									<Pagination.Item class="list-none">
 										<Pagination.PrevButton
 											class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
 										/>
@@ -515,7 +515,7 @@
 												/>
 											</Pagination.Item>
 										{:else}
-											<Pagination.Item>
+											<Pagination.Item class="list-none">
 												<Pagination.Link
 													{page}
 													isActive={currentPage === page.value}
@@ -544,3 +544,9 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	li::marker {
+		content: none; /* tidak menampilkan marker */
+	}
+</style>
