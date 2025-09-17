@@ -1,31 +1,43 @@
 <script lang="ts">
+	// Correct paths with index.js extension to avoid TypeScript errors
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import Icon from '@iconify/svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { passive } from 'svelte/legacy';
+
+	// Define a type with index signature to allow dynamic access to properties
+	interface UserData {
+		[key: string]: any;
+	}
+
+	type CategoryType = 'Siswa' | 'Guru' | 'Pegawai' | '';
 
 	const dispatch = createEventDispatcher<{ pageChange: { page: string; id?: number } }>();
 	function updateUser() {}
 
 	let siswa: any[] = $state([]);
 	let guru: any[] = $state([]);
+	let pegawai: any[] = $state([]);
 	let search = $state('');
-	let value = $state('');
-	let loading = true;
+	let value = $state('Siswa'); // Default to Siswa view
+	let loading = $state(true);
 	let currentPage = $state(1);
 	const perPage = 10;
 
 	onMount(async () => {
 		try {
-			const [resSiswa, resGuru] = await Promise.all([
+			const [resSiswa, resGuru, resPegawai] = await Promise.all([
 				fetch('http://127.0.0.1:8000/api/siswa/'),
-				fetch('http://127.0.0.1:8000/api/guru/')
+				fetch('http://127.0.0.1:8000/api/guru/'),
+				fetch('http://127.0.0.1:8000/api/pegawai')
 			]);
 
 			siswa = await resSiswa.json();
 			guru = await resGuru.json();
+			pegawai = await resPegawai.json();
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -35,7 +47,8 @@
 
 	const categories = $derived([
 		...(siswa.length ? ['Siswa'] : []),
-		...(guru.length ? ['Guru'] : [])
+		...(guru.length ? ['Guru'] : []),
+		...(pegawai.length ? ['Pegawai'] : [])
 	]);
 
 	const triggerContent = $derived(
@@ -49,7 +62,10 @@
 			keterangan: s.kelas,
 			kartu: s.kartu_pelajar,
 			no_telp: s.no_telp,
-			kategori: 'Siswa'
+			email: s.email,
+			password: s.password,
+			kategori: 'Siswa',
+			raw_data: s
 		})),
 		...guru.map((g) => ({
 			id: g.nuptk,
@@ -57,7 +73,21 @@
 			keterangan: g.bidang,
 			kartu: '-',
 			no_telp: g.no_telp,
-			kategori: 'Guru'
+			email: g.email,
+			password: g.password,
+			kategori: 'Guru',
+			raw_data: g
+		})),
+		...pegawai.map((p) => ({
+			id: p.id_pegawai,
+			nama: p.nama_pegawai,
+			keterangan: p.bidang,
+			kartu: '-',
+			no_telp: p.no_telp,
+			email: p.email,
+			password: p.password,
+			kategori: 'Pegawai',
+			raw_data: p
 		}))
 	]);
 
@@ -111,148 +141,225 @@
 			alert('Terjadi kesalahan saat menghapus data');
 		}
 	}
+	
+	// Function to get specific columns based on selected user type
+	function getColumnHeaders(type: string) {
+		switch(type) {
+			case 'Siswa':
+				return [
+					{ key: 'id', label: 'NIS' },
+					{ key: 'nama', label: 'Nama Siswa' },
+					{ key: 'keterangan', label: 'Kelas' },
+					{ key: 'kartu', label: 'Kartu Pelajar' },
+					{ key: 'no_telp', label: 'No Telepon' },
+					{ key: 'email', label: 'Email' },
+					{ key: 'action', label: 'Aksi' }
+				];
+			case 'Guru':
+				return [
+					{ key: 'id', label: 'NUPTK' },
+					{ key: 'nama', label: 'Nama Guru' },
+					{ key: 'keterangan', label: 'Bidang' },
+					{ key: 'no_telp', label: 'No Telepon' },
+					{ key: 'email', label: 'Email' },
+					{ key: 'action', label: 'Aksi' }
+				];
+			case 'Pegawai':
+				return [
+					{ key: 'id', label: 'ID Pegawai' },
+					{ key: 'nama', label: 'Nama Pegawai' },
+					{ key: 'keterangan', label: 'Bidang' },
+					{ key: 'no_telp', label: 'No Telepon' },
+					{ key: 'email', label: 'Email' },
+					{ key: 'action', label: 'Aksi' }
+				];
+			default:
+				return [];
+		}
+	}
+	
+	const columnHeaders = $derived(getColumnHeaders(value));
+
+	interface PageInfo {
+		key: string;
+		value: number;
+		type?: string;
+	}
+
+	// Helper function to access user data safely
+	function getUserData(user: UserData, key: string): any {
+		return user[key];
+	}
 </script>
 
-<h1 class="text-4xl font-bold">DATA USERS</h1>
+<h1 class="text-4xl font-bold mb-6 text-blue-600">DATA USERS</h1>
 
-<div class="flex w-full justify-end">
-	<button
-		class="mb-10 rounded-2xl bg-blue-400 p-2 px-3 text-white hover:bg-blue-600"
-		onclick={() => dispatch('pageChange', { page: 'TambahUser' })}
-	>
-		Tambah data
-	</button>
-</div>
-
-<div class="mb-10 flex gap-10">
-	<div class="flex w-[30vw] flex-col gap-3 rounded-2xl border-2 border-gray-300 bg-white p-5">
-		<h2 class="text-2xl font-medium">Jumlah User</h2>
-		<h2 class="text-2xl">{totalData()}</h2>
-	</div>
-	<div class="flex w-[30vw] flex-col gap-3 rounded-2xl border-2 border-gray-300 bg-white p-5">
-		<h2 class="text-2xl font-medium">Total Barang</h2>
-		<h2 class="text-2xl">20</h2>
-	</div>
-</div>
-
-<div class="rounded-4xl flex flex-col bg-gray-100">
-	<div class="menubar flex h-[10vh] items-center gap-5 pl-4">
-		<div>
-			<Select.Root type="single" name="userCategory" bind:value>
-				<Select.Trigger class="w-[180px] bg-white py-5">
-					{triggerContent}
-				</Select.Trigger>
-				<Select.Content>
-					<Select.Group>
-						<Select.Label>Category</Select.Label>
-						<Select.Item value="">All</Select.Item>
-						{#each categories as kategori}
-							<Select.Item value={kategori}>{kategori}</Select.Item>
-						{/each}
-					</Select.Group>
-				</Select.Content>
-			</Select.Root>
-		</div>
-		<div class="search relative mb-2 mt-2 flex w-[20vw] rounded-sm border-[1px] bg-white p-0 px-1">
-			<Icon
-				icon="line-md:search"
-				class="absolute left-2 top-2"
-				width="24"
-				height="24"
-				style="color: #000"
-			/>
-			<input
-				type="text"
-				placeholder="Search..."
-				class="w-full py-2 pl-9 outline-none"
-				bind:value={search}
-			/>
-		</div>
-	</div>
-
-	<div class="rounded-4xl bg-white p-2 px-4">
-		<Table.Root class="mb-5">
-			<Table.Header>
-				<Table.Row class="border-b-2 border-black">
-					<Table.Head class="w-[100px] border-r-[1px] border-black">ID</Table.Head>
-					<Table.Head>Nama</Table.Head>
-					<Table.Head>Keterangan</Table.Head>
-					<Table.Head class="text-right">Kartu</Table.Head>
-					<Table.Head class="text-right">NO Telp</Table.Head>
-					<Table.Head class="text-right">Kategori</Table.Head>
-					<Table.Head class="text-right">Button</Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each paginatedData() as user}
-					<Table.Row class="border-b-[1px] border-black">
-						<Table.Cell class="border-r-[1px] border-black font-medium text-black">
-							{user.id}
-						</Table.Cell>
-						<Table.Cell>{user.nama}</Table.Cell>
-						<Table.Cell>{user.keterangan}</Table.Cell>
-						<Table.Cell class="text-right">
-							<img
-								src={user.kartu}
-								alt="Kartu Pelajar"
-								class="h-16 w-16 object-contain"
-							/></Table.Cell
-						>
-						<Table.Cell class="text-right">{user.no_telp}</Table.Cell>
-						<Table.Cell class="text-right">{user.kategori}</Table.Cell>
-						<Table.Cell class="flex justify-end">
-							<DropdownMenu.Root>
-								<DropdownMenu.Trigger>
-									<Icon icon="mi:options-vertical" width="20" height="20" />
-								</DropdownMenu.Trigger>
-								<DropdownMenu.Content>
-									<DropdownMenu.Group>
-										<DropdownMenu.Label>Action</DropdownMenu.Label>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item>
-											<button onclick={() => deleteUser(user.id, user.kategori)}>Delete</button>
-										</DropdownMenu.Item>
-										<DropdownMenu.Item>
-											<a
-												class="w-[100%]"
-												href={`/update/${user.kategori.toLowerCase()}/${user.id}`}
-											>
-												Update
-											</a>
-										</DropdownMenu.Item>
-									</DropdownMenu.Group>
-								</DropdownMenu.Content>
-							</DropdownMenu.Root>
-						</Table.Cell>
-					</Table.Row>
+<!-- Controls section -->
+<div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+	<div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+		<!-- User Type Selector -->
+		<div class="w-64">
+			<label for="user-type" class="block text-sm font-medium text-gray-700 mb-1">Pilih Tipe Pengguna</label>
+			<!-- Using manual selection with regular select to avoid TypeScript errors -->
+			<select 
+				class="w-full border border-blue-200 bg-white p-2 rounded-md"
+				onchange={(e) => value = (e.target as HTMLSelectElement).value as CategoryType}
+			>
+				{#each categories as category}
+					<option value={category} selected={category === value}>{category}</option>
 				{/each}
-			</Table.Body>
-		</Table.Root>
+			</select>
+		</div>
 
-		<Pagination.Root count={totalData()} {perPage} bind:page={currentPage}>
-			{#snippet children({ pages, currentPage })}
-				<Pagination.Content>
-					<Pagination.Item>
-						<Pagination.PrevButton />
-					</Pagination.Item>
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item>
-								<Pagination.Link {page} isActive={currentPage === page.value}>
-									{page.value}
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-					<Pagination.Item>
-						<Pagination.NextButton />
-					</Pagination.Item>
-				</Pagination.Content>
-			{/snippet}
-		</Pagination.Root>
+		<!-- Search -->
+		<div class="relative w-64">
+			<label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
+			<div class="relative">
+				<input
+					id="search"
+					class="pl-10 pr-4 py-2 border border-blue-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+					type="text"
+					placeholder="Cari nama atau keterangan..."
+					bind:value={search}
+				/>
+				<div class="absolute left-3 top-2.5 text-blue-400">
+					<Icon icon="heroicons:magnifying-glass" width="20" height="20" />
+				</div>
+			</div>
+		</div>
+
+		<!-- Add User Button -->
+		<button
+			class="rounded-lg bg-blue-500 p-2 px-4 text-white hover:bg-blue-600 transition-colors mt-6"
+			onclick={() => dispatch('pageChange', { page: 'TambahUser' })}
+		>
+			<div class="flex items-center gap-2">
+				<Icon icon="heroicons:plus" />
+				Tambah User
+			</div>
+		</button>
 	</div>
+</div>
+
+<!-- Stats Card -->
+<div class="flex gap-6 mb-6">
+	<div class="flex-1 bg-white rounded-lg shadow-sm overflow-hidden">
+		<div class="flex items-center p-5">
+			<div class="rounded-full bg-blue-100 p-3 mr-4">
+				<Icon icon="heroicons:users" class="text-blue-600" width="24" height="24" />
+			</div>
+			<div>
+				<h2 class="text-lg font-medium text-gray-600">Jumlah {value}</h2>
+				<h2 class="text-2xl font-bold text-blue-800">{totalData()}</h2>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Table Container -->
+<div class="bg-white rounded-lg shadow-sm p-6 overflow-hidden">
+	{#if loading}
+		<div class="flex justify-center items-center py-16">
+			<div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+		</div>
+	{:else}
+		<!-- Dynamic Table Headers Based on Selected User Type -->
+		<div class="overflow-x-auto">
+			<Table.Root>
+				<Table.Header>
+					<Table.Row class="bg-blue-50">
+						{#each columnHeaders as header}
+							<Table.Head class="font-semibold text-blue-800">{header.label}</Table.Head>
+						{/each}
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#if paginatedData().length === 0}
+						<Table.Row>
+							<Table.Cell colspan={columnHeaders.length} class="text-center py-10 text-gray-500">
+								Tidak ada data {value} yang ditemukan
+							</Table.Cell>
+						</Table.Row>
+					{:else}
+						{#each paginatedData() as user, i}
+							<Table.Row class={i % 2 === 0 ? 'bg-white' : 'bg-blue-50/30'}>
+								{#each columnHeaders as header}
+									{#if header.key === 'kartu' && user.kategori === 'Siswa'}
+										<Table.Cell>
+											{#if user.kartu && user.kartu !== '-'}
+												<img 
+													src={user.kartu} 
+													alt="Kartu Pelajar" 
+													class="h-10 w-16 object-contain"
+												/>
+											{:else}
+												<span class="text-gray-400">-</span>
+											{/if}
+										</Table.Cell>
+									{:else if header.key === 'action'}
+										<Table.Cell>
+											<div class="flex gap-2">
+												<button
+													class="p-1.5 rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
+													onclick={() => dispatch('pageChange', { page: 'EditUser', id: user.id })}
+												>
+													<Icon icon="heroicons:pencil-square" width="18" height="18" />
+												</button>
+												<button
+													class="p-1.5 rounded bg-red-100 text-red-600 hover:bg-red-200"
+													onclick={() => deleteUser(Number(user.id), user.kategori)}
+												>
+													<Icon icon="heroicons:trash" width="18" height="18" />
+												</button>
+											</div>
+										</Table.Cell>
+									{:else}
+										<Table.Cell>
+											<span>{getUserData(user, header.key) || '-'}</span>
+										</Table.Cell>
+									{/if}
+								{/each}
+							</Table.Row>
+						{/each}
+					{/if}
+				</Table.Body>
+			</Table.Root>
+		</div>
+		
+		<!-- Pagination -->
+		{#if totalData() > perPage}
+			<div class="flex justify-center mt-6">
+				<Pagination.Root 
+					count={Math.ceil(totalData() / perPage)} 
+					perPage={perPage}
+					page={currentPage}
+					onPageChange={(p) => currentPage = p}
+				>
+					{#snippet children({ pages, currentPage }: { pages: any[], currentPage: number })}
+						<Pagination.Content>
+							<Pagination.Item>
+								<Pagination.PrevButton />
+							</Pagination.Item>
+							{#each pages as page (page.key)}
+								{#if page.type === 'ellipsis'}
+									<Pagination.Item>
+										<Pagination.Ellipsis />
+									</Pagination.Item>
+								{:else}
+									<Pagination.Item>
+										<Pagination.Link {page} isActive={currentPage === page.value}>
+											{page.value}
+										</Pagination.Link>
+									</Pagination.Item>
+								{/if}
+							{/each}
+							<Pagination.Item>
+								<Pagination.NextButton />
+							</Pagination.Item>
+						</Pagination.Content>
+					{/snippet}
+				</Pagination.Root>
+			</div>
+		{/if}
+	{/if}
 </div>
