@@ -1,10 +1,11 @@
 <script lang="ts">
+	import CryptoJS from 'crypto-js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { createEventDispatcher, onMount } from 'svelte';
 	const dispatch = createEventDispatcher<{ pageChange: { page: string; id?: number } }>();
 
 	let value = $state('');
-	let categories = ['Siswa', 'Guru'];
+	let categories = ['Siswa', 'Guru', 'Pegawai'];
 	let isLoading = $state(false);
 	let successMessage = $state('');
 	let errorMessage = $state('');
@@ -16,12 +17,21 @@
 	let nuptk = $state('');
 	let nama_guru = $state('');
 	let bidang = $state('');
+	let email = $state('');
+	let password = $state('');
+	let id_pegawai = $state('');
+	let nama_pegawai = $state('');
+
+	function hashPassword(password: string): string {
+		return CryptoJS.SHA256(password).toString();
+	}
 
 	async function tambahUser(event: Event, kategori: string) {
 		event.preventDefault();
 		isLoading = true;
 		successMessage = '';
 		errorMessage = '';
+		const hashed = hashPassword(password);
 
 		try {
 			let endpoint = '';
@@ -34,6 +44,8 @@
 				bodyData.append('nama_siswa', nama_siswa);
 				bodyData.append('kelas', kelas);
 				bodyData.append('no_telp', no_telp);
+				bodyData.append('email', email);
+				bodyData.append('password', hashed);
 				if (kartu_pelajar) bodyData.append('kartu_pelajar', kartu_pelajar); // pastikan tidak null
 			} else if (kategori === 'Guru') {
 				endpoint = 'tambah_guru';
@@ -41,7 +53,19 @@
 					nuptk,
 					nama_guru,
 					bidang,
-					no_telp
+					no_telp,
+					email,
+					password: hashed
+				};
+			} else if (kategori === 'Pegawai') {
+				endpoint = 'tambah_pegawai';
+				bodyData = {
+					id_pegawai,
+					nama_pegawai,
+					bidang,
+					no_telp,
+					email,
+					password: hashed
 				};
 			} else {
 				errorMessage = 'Kategori tidak valid';
@@ -81,7 +105,6 @@
 	}
 
 	const handleKartuPelajar = (event: Event) => {
-		debugger;
 		const inputHTML = event.target as HTMLInputElement;
 		if (inputHTML.files && inputHTML.files.length > 0) {
 			kartu_pelajar = inputHTML.files[0];
@@ -219,6 +242,167 @@
 					/>
 				</div>
 
+				<div class="space-y-2">
+					<label for="email" class="text-card-foreground block text-sm font-medium">
+						Email <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="email"
+						type="text"
+						bind:value={email}
+						placeholder="Masukkan Email"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="password" class="text-card-foreground block text-sm font-medium">
+						Password <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="password"
+						type="password"
+						bind:value={password}
+						placeholder="Masukkan Email"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
+					<button
+						type="button"
+						onclick={() => dispatch('pageChange', { page: 'Pengguna' })}
+						class="border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:ring-ring inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					>
+						Kembali
+					</button>
+					<button
+						type="submit"
+						disabled={isLoading}
+						class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					>
+						{#if isLoading}
+							<svg class="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+									fill="none"
+								></circle>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+							Menyimpan...
+						{:else}
+							Tambah Siswa
+						{/if}
+					</button>
+				</div>
+			</form>
+		{/if}
+
+		{#if value === 'Pegawai'}
+			<form onsubmit={(e) => tambahUser(e, 'Pegawai')} class="space-y-6">
+				<div class="space-y-2">
+					<label for="id_pegawai" class="text-card-foreground block text-sm font-medium">
+						ID Pegawai <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="id_pegawai"
+						type="text"
+						bind:value={id_pegawai}
+						placeholder="Masukkan ID Pegawai"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="nama_pegawai" class="text-card-foreground block text-sm font-medium">
+						Nama Pegawai <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="nama_pegawai"
+						type="text"
+						bind:value={nama_pegawai}
+						placeholder="Masukkan Nama Pegawai"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="bidang" class="text-card-foreground block text-sm font-medium">
+						Bidang <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="bidang"
+						type="text"
+						bind:value={bidang}
+						placeholder="Masukkan Bidang"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="no_telp" class="text-card-foreground block text-sm font-medium">
+						No. Telepon <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="no_telp"
+						type="text"
+						bind:value={no_telp}
+						placeholder="Masukkan No. Telepon"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="email" class="text-card-foreground block text-sm font-medium">
+						Email <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="email"
+						type="text"
+						bind:value={email}
+						placeholder="Masukkan Email"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<label for="password" class="text-card-foreground block text-sm font-medium">
+						Password <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="password"
+						type="password"
+						bind:value={password}
+						placeholder="Masukkan Email"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+
 				<div class="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
 					<button
 						type="button"
@@ -314,6 +498,34 @@
 						type="text"
 						bind:value={no_telp}
 						placeholder="Masukkan No. Telepon"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+				<div class="space-y-2">
+					<label for="email" class="text-card-foreground block text-sm font-medium">
+						Email <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="email"
+						type="text"
+						bind:value={email}
+						placeholder="Masukkan Email"
+						required
+						disabled={isLoading}
+						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
+				</div>
+				<div class="space-y-2">
+					<label for="password" class="text-card-foreground block text-sm font-medium">
+						password <span class="text-destructive">*</span>
+					</label>
+					<input
+						id="password"
+						type="text"
+						bind:value={password}
+						placeholder="Masukkan Password"
 						required
 						disabled={isLoading}
 						class="border-border bg-input placeholder:text-muted focus:border-accent focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"

@@ -75,6 +75,17 @@ def delete_guru(request, id):
             return JsonResponse({"error": "Guru tidak ditemukan"}, status=404)
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
+
+@csrf_exempt   
+def delete_pegawai(request, id):
+    if request.method == "DELETE":
+        try:
+            pegawai = get_object_or_404(Pegawai, pk=id)
+            pegawai.delete()
+            return JsonResponse({"message": "Pegawai berhasil dihapus"})
+        except Pegawai.DoesNotExist:
+            return JsonResponse({"error": "Guru tidak ditemukan"}, status=404)
+    return JsonResponse({"error": "Method not allowed"}, status=405)
     
 @api_view(['POST'])
 def tambah_barang (request):
@@ -102,12 +113,20 @@ def tambah_barang (request):
   return JsonResponse({"message": "Siswa berhasil ditambahkan"})
 
 @api_view(['POST'])
+def tambah_pegawai (request):
+    serializer = PegawaiSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
 def tambah_siswa(request):
     breakpoint
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=400)
     
-    required_data = ["nis", "nama_siswa", "kelas", "no_telp"]
+    required_data = ["nis", "nama_siswa", "kelas", "no_telp","email","password"]
     data_siswa = {data: request.POST.get(data) for data in required_data}
 
     foto_kartuPelajar = request.FILES.get("kartu_pelajar")
@@ -120,6 +139,8 @@ def tambah_siswa(request):
         nama_siswa = data_siswa["nama_siswa"],
         kelas = data_siswa["kelas"],
         no_telp = data_siswa["no_telp"],
+        email = data_siswa["email"],
+        password = data_siswa["password"],
         kartu_pelajar = data_siswa["foto_kartuPelajar"]
     )
 
@@ -187,6 +208,60 @@ def detail_barang(request, id):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT'])
+def detail_user(request, kategori , id):
+
+    if kategori == "Pegawai":
+        try:
+            pegawai = Pegawai.objects.get(pk=id)
+        except Pegawai.DoesNotExist:
+            return Response({'error': 'Barang tidak ditemukan'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if request.method == 'GET':
+            serializer = PegawaiSerializer(pegawai)
+            return Response(serializer.data)
+        
+        elif request.method == 'PUT':
+            serializer = PegawaiSerializer(pegawai, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif kategori == "Guru":
+        try:
+            guru = Guru.objects.get(pk=id)
+        except Guru.DoesNotExist:
+            return Response({'error': 'Barang tidak ditemukan'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if request.method == 'GET':
+            serializer = GuruSerializer(guru)
+            return Response(serializer.data)
+    
+        elif request.method == 'PUT':
+            serializer = GuruSerializer(guru, data=request.data, partial=True)  # partial=True agar bisa update sebagian
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif kategori == "Siswa":
+        try:
+            siswa = Siswa.objects.get(pk=id)
+        except Siswa.DoesNotExist:
+            return Response({'error': 'Barang tidak ditemukan'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if request.method == 'GET':
+            serializer = SiswaSerializer(siswa)
+            return Response(serializer.data)
+    
+        elif request.method == 'PUT':
+            serializer =  SiswaSerializer(siswa, data=request.data, partial=True)  # partial=True agar bisa update sebagian
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 def get_summary_barang(request):
     data = Barang.objects.aggregate(

@@ -64,7 +64,7 @@
 		const inputHTML = event.target as HTMLInputElement;
 		if (inputHTML.files && inputHTML.files.length > 0) {
 			img = inputHTML.files[0];
-			
+
 			// Membuat URL untuk preview gambar
 			imagePreview = URL.createObjectURL(img);
 		}
@@ -81,8 +81,10 @@
 <div class="min-h-screen bg-gray-50 p-6">
 	<div class="mx-auto max-w-2xl rounded-xl bg-white p-8 shadow-sm">
 		<div class="mb-6">
-			<h2 class="text-2xl font-semibold text-gray-800">Tambah Barang Baru</h2>
-			<p class="mt-1 text-sm text-gray-500">Silakan isi formulir di bawah untuk menambahkan barang baru ke inventori</p>
+			<h2 class="text-2xl font-semibold text-gray-800">Tambah User</h2>
+			<p class="mt-1 text-sm text-gray-500">
+				Silakan isi formulir di bawah untuk menambahkan barang baru ke inventori
+			</p>
 		</div>
 
 		<form onsubmit={tambah_barang} class="space-y-5">
@@ -99,7 +101,9 @@
 				</div>
 
 				<div class="space-y-2">
-					<label for="nama_barang" class="block text-sm font-medium text-gray-700">Nama Barang</label>
+					<label for="nama_barang" class="block text-sm font-medium text-gray-700"
+						>Nama Barang</label
+					>
 					<input
 						id="nama_barang"
 						type="text"
@@ -148,7 +152,9 @@
 				<label for="img" class="block text-sm font-medium text-gray-700">Gambar</label>
 				<div class="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
 					<div class="flex-1">
-						<div class="relative flex h-32 w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 hover:bg-gray-50">
+						<div
+							class="relative flex h-32 w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 hover:bg-gray-50"
+						>
 							<input
 								id="img"
 								type="file"
@@ -163,7 +169,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 					<!-- Preview Gambar -->
 					<div class="flex-1">
 						{#if imagePreview}
@@ -186,7 +192,9 @@
 								</button>
 							</div>
 						{:else}
-							<div class="flex h-32 w-full items-center justify-center rounded-md border border-gray-300 bg-gray-50">
+							<div
+								class="flex h-32 w-full items-center justify-center rounded-md border border-gray-300 bg-gray-50"
+							>
 								<span class="text-sm text-gray-500">Preview gambar</span>
 							</div>
 						{/if}
@@ -202,7 +210,7 @@
 					</div>
 				</div>
 			{/if}
-			
+
 			{#if errorMessage}
 				<div class="rounded-md bg-red-50 p-4 text-red-700">
 					<div class="flex items-center">
