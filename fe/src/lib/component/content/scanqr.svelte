@@ -6,7 +6,7 @@
 
 	async function mulaiScan() {
 		if (!scanner) {
-			scanner = new Html5Qrcode('reader'); // div untuk kamera
+			scanner = new Html5Qrcode('reader');
 		}
 
 		await scanner.start(

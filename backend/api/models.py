@@ -154,6 +154,8 @@ class Guru(models.Model):
     nama_guru = models.CharField(max_length=30)
     bidang = models.CharField(max_length=20, blank=True, null=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=30, blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -165,6 +167,8 @@ class Pegawai(models.Model):
     nama_pegawai = models.CharField(max_length=30)
     bidang = models.CharField(max_length=20, blank=True, null=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=30, blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -191,6 +195,8 @@ class Siswa(models.Model):
     kelas = models.CharField(max_length=15, blank=True, null=True)
     kartu_pelajar = models.BinaryField(blank=True, null=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=30, blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -15,7 +15,9 @@
 
 	type CategoryType = 'Siswa' | 'Guru' | 'Pegawai' | '';
 
-	const dispatch = createEventDispatcher<{ pageChange: { page: string; id?: number } }>();
+	const dispatch = createEventDispatcher<{
+		pageChange: { page: string; id?: number; kategori?: string };
+	}>();
 	function updateUser() {}
 
 	let siswa: any[] = $state([]);
@@ -110,8 +112,9 @@
 		return filteredData.slice(start, end);
 	});
 
-	async function deleteUser(id: number, kategori: string) {
+	async function deleteUser(id: string, kategori: string) {
 		if (!confirm('Apakah anda yakin ingin menghapus data ini ?')) return;
+		console.log(id, kategori);
 
 		try {
 			let res;
@@ -123,6 +126,10 @@
 				res = await fetch(`http://127.0.0.1:8000/api/guru/delete/${id}/`, {
 					method: 'DELETE'
 				});
+			} else if (kategori === 'Pegawai') {
+				res = await fetch(`http://127.0.0.1:8000/api/pegawai/delete/${id}/`, {
+					method: 'DELETE'
+				});
 			}
 
 			if (!res?.ok) {
@@ -131,8 +138,10 @@
 
 			if (kategori === 'Siswa') {
 				siswa = siswa.filter((s) => s.nis !== id);
-			} else {
+			} else if (kategori === 'Guru') {
 				guru = guru.filter((g) => g.nuptk !== id);
+			} else if (kategori === 'Pegawai') {
+				pegawai = pegawai.filter((p) => p.id_pegawai !== id);
 			}
 
 			alert('Data berhasil dihapus');
@@ -141,10 +150,10 @@
 			alert('Terjadi kesalahan saat menghapus data');
 		}
 	}
-	
+
 	// Function to get specific columns based on selected user type
 	function getColumnHeaders(type: string) {
-		switch(type) {
+		switch (type) {
 			case 'Siswa':
 				return [
 					{ key: 'id', label: 'NIS' },
@@ -177,7 +186,7 @@
 				return [];
 		}
 	}
-	
+
 	const columnHeaders = $derived(getColumnHeaders(value));
 
 	interface PageInfo {
@@ -192,18 +201,20 @@
 	}
 </script>
 
-<h1 class="text-4xl font-bold mb-6 text-blue-600">DATA USERS</h1>
+<h1 class="mb-6 text-4xl font-bold text-blue-600">DATA USERS</h1>
 
 <!-- Controls section -->
-<div class="bg-white p-6 rounded-lg shadow-sm mb-6">
-	<div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+<div class="mb-6 rounded-lg bg-white p-6 shadow-sm">
+	<div class="flex flex-col items-center justify-between gap-4 md:flex-row">
 		<!-- User Type Selector -->
 		<div class="w-64">
-			<label for="user-type" class="block text-sm font-medium text-gray-700 mb-1">Pilih Tipe Pengguna</label>
+			<label for="user-type" class="mb-1 block text-sm font-medium text-gray-700"
+				>Pilih Tipe Pengguna</label
+			>
 			<!-- Using manual selection with regular select to avoid TypeScript errors -->
-			<select 
-				class="w-full border border-blue-200 bg-white p-2 rounded-md"
-				onchange={(e) => value = (e.target as HTMLSelectElement).value as CategoryType}
+			<select
+				class="w-full rounded-md border border-blue-200 bg-white p-2"
+				onchange={(e) => (value = (e.target as HTMLSelectElement).value as CategoryType)}
 			>
 				{#each categories as category}
 					<option value={category} selected={category === value}>{category}</option>
@@ -213,11 +224,11 @@
 
 		<!-- Search -->
 		<div class="relative w-64">
-			<label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
+			<label for="search" class="mb-1 block text-sm font-medium text-gray-700">Cari</label>
 			<div class="relative">
 				<input
 					id="search"
-					class="pl-10 pr-4 py-2 border border-blue-200 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+					class="w-full rounded-md border border-blue-200 py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
 					type="text"
 					placeholder="Cari nama atau keterangan..."
 					bind:value={search}
@@ -230,7 +241,7 @@
 
 		<!-- Add User Button -->
 		<button
-			class="rounded-lg bg-blue-500 p-2 px-4 text-white hover:bg-blue-600 transition-colors mt-6"
+			class="mt-6 rounded-lg bg-blue-500 p-2 px-4 text-white transition-colors hover:bg-blue-600"
 			onclick={() => dispatch('pageChange', { page: 'TambahUser' })}
 		>
 			<div class="flex items-center gap-2">
@@ -242,10 +253,10 @@
 </div>
 
 <!-- Stats Card -->
-<div class="flex gap-6 mb-6">
-	<div class="flex-1 bg-white rounded-lg shadow-sm overflow-hidden">
+<div class="mb-6 flex gap-6">
+	<div class="flex-1 overflow-hidden rounded-lg bg-white shadow-sm">
 		<div class="flex items-center p-5">
-			<div class="rounded-full bg-blue-100 p-3 mr-4">
+			<div class="mr-4 rounded-full bg-blue-100 p-3">
 				<Icon icon="heroicons:users" class="text-blue-600" width="24" height="24" />
 			</div>
 			<div>
@@ -257,10 +268,10 @@
 </div>
 
 <!-- Table Container -->
-<div class="bg-white rounded-lg shadow-sm p-6 overflow-hidden">
+<div class="overflow-hidden rounded-lg bg-white p-6 shadow-sm">
 	{#if loading}
-		<div class="flex justify-center items-center py-16">
-			<div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+		<div class="flex items-center justify-center py-16">
+			<div class="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
 		</div>
 	{:else}
 		<!-- Dynamic Table Headers Based on Selected User Type -->
@@ -276,7 +287,7 @@
 				<Table.Body>
 					{#if paginatedData().length === 0}
 						<Table.Row>
-							<Table.Cell colspan={columnHeaders.length} class="text-center py-10 text-gray-500">
+							<Table.Cell colspan={columnHeaders.length} class="py-10 text-center text-gray-500">
 								Tidak ada data {value} yang ditemukan
 							</Table.Cell>
 						</Table.Row>
@@ -287,9 +298,9 @@
 									{#if header.key === 'kartu' && user.kategori === 'Siswa'}
 										<Table.Cell>
 											{#if user.kartu && user.kartu !== '-'}
-												<img 
-													src={user.kartu} 
-													alt="Kartu Pelajar" 
+												<img
+													src={user.kartu}
+													alt="Kartu Pelajar"
 													class="h-10 w-16 object-contain"
 												/>
 											{:else}
@@ -300,14 +311,19 @@
 										<Table.Cell>
 											<div class="flex gap-2">
 												<button
-													class="p-1.5 rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
-													onclick={() => dispatch('pageChange', { page: 'EditUser', id: user.id })}
+													class="rounded bg-blue-100 p-1.5 text-blue-600 hover:bg-blue-200"
+													onclick={() =>
+														dispatch('pageChange', {
+															page: 'UpdateUser',
+															id: user.id,
+															kategori: user.kategori
+														})}
 												>
 													<Icon icon="heroicons:pencil-square" width="18" height="18" />
 												</button>
 												<button
-													class="p-1.5 rounded bg-red-100 text-red-600 hover:bg-red-200"
-													onclick={() => deleteUser(Number(user.id), user.kategori)}
+													class="rounded bg-red-100 p-1.5 text-red-600 hover:bg-red-200"
+													onclick={() => deleteUser(String(user.id), user.kategori)}
 												>
 													<Icon icon="heroicons:trash" width="18" height="18" />
 												</button>
@@ -325,17 +341,17 @@
 				</Table.Body>
 			</Table.Root>
 		</div>
-		
+
 		<!-- Pagination -->
 		{#if totalData() > perPage}
-			<div class="flex justify-center mt-6">
-				<Pagination.Root 
-					count={Math.ceil(totalData() / perPage)} 
-					perPage={perPage}
+			<div class="mt-6 flex justify-center">
+				<Pagination.Root
+					count={Math.ceil(totalData() / perPage)}
+					{perPage}
 					page={currentPage}
-					onPageChange={(p) => currentPage = p}
+					onPageChange={(p) => (currentPage = p)}
 				>
-					{#snippet children({ pages, currentPage }: { pages: any[], currentPage: number })}
+					{#snippet children({ pages, currentPage }: { pages: any[]; currentPage: number })}
 						<Pagination.Content>
 							<Pagination.Item>
 								<Pagination.PrevButton />

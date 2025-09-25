@@ -544,9 +544,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	li::marker {
-		content: none; /* tidak menampilkan marker */
-	}
-</style>

@@ -14,6 +14,7 @@
 	import Scanqr from '$lib/component/content/scanqr.svelte';
 	import DetailPeminjaman from '$lib/detailStatus/detailPeminjaman.svelte';
 	import ScanPengembalian from '$lib/component/content/scanpengembalian.svelte';
+	import UpdateUser from '../update/updateuser.svelte';
 
 	import type { Component } from 'svelte';
 
@@ -35,9 +36,11 @@
 		DetailDashboard,
 		Scanqr,
 		ScanPengembalian,
-		DetailPeminjaman
+		DetailPeminjaman,
+		UpdateUser
 	};
-	let selectedBarangId = $state<undefined | number>(undefined);
+	let selectedBarangId = $state<undefined | string>(undefined);
+	let selectedKategori = $state<undefined | string>(undefined);
 	const SelectedComponent = $derived<Component<any>>(pageComponents[activePage]);
 
 	function toggleSidebar(): void {
@@ -114,12 +117,14 @@
 			<SelectedComponent
 				{...activePage === 'Update' ||
 				activePage === 'DetailDashboard' ||
-				activePage === 'DetailPeminjaman'
-					? { id: selectedBarangId }
+				activePage === 'DetailPeminjaman' ||
+				activePage === 'UpdateUser'
+					? { id: selectedBarangId, kategori: selectedKategori }
 					: {}}
-				on:pageChange={(e: CustomEvent<{ page: string; id?: number }>) => {
+				on:pageChange={(e: CustomEvent<{ page: string; id?: string; kategori?: string }>) => {
 					activePage = e.detail.page;
 					selectedBarangId = e.detail.id;
+					selectedKategori = e.detail.kategori;
 				}}
 			/>
 		</main>
