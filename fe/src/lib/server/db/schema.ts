@@ -13,6 +13,7 @@ export const session = pgTable('session', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
+
 export type Session = typeof session.$inferSelect;
 
 export type User = typeof user.$inferSelect;
