@@ -10,6 +10,8 @@ urlpatterns = [
     path('peminjaman/', v.get_Peminjaman, name='get_peminjaman'),
     path('detail/peminjaman', v.get_detail_peminjaman, name='get_detail_peminjaman'),
     path('barang/summary/', v.get_summary_barang, name='get_summary_barang'),
+    path('detail/peminjaman/list', v.detail_peminjaman_list, name='detail_peminjaman_list'),
+
 
     # Delete
     path('barang/delete/<str:id>/', v.delete_barang, name='delete_barang'),
