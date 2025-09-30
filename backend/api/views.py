@@ -414,3 +414,51 @@ def scan_pengembalian(request):
 
     except DetailPeminjaman.DoesNotExist:
         return Response({"error": "Detail peminjaman tidak ditemukan"}, status=404)
+
+@api_view(["GET"])
+def detail_peminjaman_list(request):
+    details = (
+        DetailPeminjaman.objects
+        .select_related("id_peminjaman", "id_barang")
+        .annotate(
+            kode_pinjam=F("id_peminjaman__kode_pinjam"),
+            nama_barang=F("id_barang__nama_barang"),
+
+            # Ambil nama peminjam dari 3 kemungkinan
+            nama_peminjam=Coalesce(
+                F("id_peminjaman__nis__nama_siswa"),
+                F("id_peminjaman__nuptk__nama_guru"),
+                F("id_peminjaman__id_pegawai__nama_pegawai"),
+                Value("Nama Tidak Ditemukan")
+            ),
+
+            # Jenis peminjam
+            jenis_peminjam=Case(
+                When(id_peminjaman__nis__isnull=False, then=Value("Siswa")),
+                When(id_peminjaman__nuptk__isnull=False, then=Value("Guru")),
+                When(id_peminjaman__id_pegawai__isnull=False, then=Value("Pegawai")),
+                default=Value("Tidak Diketahui")
+            ),
+
+            jumlah_dipinjam=F("jumlah"),
+            status_barang=F("status_pengambilan"),
+            tanggal_pinjam=F("id_peminjaman__tanggal_pinjam"),
+            tanggal_kembali=F("id_peminjaman__tanggal_kembali"),
+            batas_ambil_val=F("batas_ambil"),   # ✅ kasih alias baru
+            status_peminjaman=F("id_peminjaman__status_pinjam"),
+        )
+        .values(
+            "kode_detail",
+            "kode_pinjam",
+            "nama_peminjam",
+            "jenis_peminjam",
+            "nama_barang",
+            "jumlah_dipinjam",
+            "status_barang",
+            "tanggal_pinjam",
+            "tanggal_kembali",
+            "batas_ambil_val",   # ✅ gunakan alias ini
+            "status_peminjaman",
+        )
+    )
+    return Response(details)
