@@ -45,3 +45,16 @@ class DetailPeminjamanSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailPeminjaman
         fields = '__all__'
+
+class DetailPeminjamanFlatSerializer(serializers.Serializer):
+    kode_pinjam = serializers.CharField()
+    nama_peminjam = serializers.CharField()
+    jenis_peminjam = serializers.CharField()
+    nama_barang = serializers.CharField()
+    jumlah_dipinjam = serializers.IntegerField()
+    status_barang = serializers.CharField()
+    tanggal_pinjam = serializers.DateField()
+    tanggal_kembali = serializers.DateField()
+    batas_ambil = serializers.DateField()
+    kode_detail = serializers.CharField()
+    status_peminjaman = serializers.CharField()
