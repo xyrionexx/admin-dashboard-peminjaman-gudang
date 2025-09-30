@@ -53,13 +53,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5173",
-    "http://localhost:5173",
-]
+
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
 ]
 
@@ -92,8 +89,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'peminjaman_gudang',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'tot',
+        'PASSWORD': 'T3@m0fThr33',
         'HOST': 'localhost',
         'PORT': '5432',
     }
