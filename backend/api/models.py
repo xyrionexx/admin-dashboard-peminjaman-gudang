@@ -1,84 +1,7 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-
-class AuthGroup(models.Model):
-    name = models.CharField(unique=True, max_length=150)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group'
-
-
-class AuthGroupPermissions(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_group_permissions'
-        unique_together = (('group', 'permission'),)
-
-
-class AuthPermission(models.Model):
-    name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
-    codename = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_permission'
-        unique_together = (('content_type', 'codename'),)
-
-
-class AuthUser(models.Model):
-    password = models.CharField(max_length=128)
-    last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
-    date_joined = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user'
-
-
-class AuthUserGroups(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_groups'
-        unique_together = (('user', 'group'),)
-
-
-class AuthUserUserPermissions(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'auth_user_user_permissions'
-        unique_together = (('user', 'permission'),)
-
-
 class Barang(models.Model):
-    id_barang = models.CharField(primary_key=True, max_length=20)
+    id_barang = models.AutoField(primary_key=True)
     nama_barang = models.CharField(max_length=20)
     jumlah = models.IntegerField()
     kategori = models.CharField(max_length=20, blank=True, null=True)
@@ -86,71 +9,11 @@ class Barang(models.Model):
     img = models.BinaryField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'barang'
 
-
-class DetailPeminjaman(models.Model):
-    kode_detail = models.CharField(primary_key=True, max_length=50)
-    id_peminjaman = models.ForeignKey('Peminjaman', models.DO_NOTHING, db_column='id_peminjaman')
-    id_barang = models.ForeignKey(Barang, models.DO_NOTHING, db_column='id_barang')
-    jumlah = models.IntegerField()
-    waktu_pengambilan = models.DateTimeField(blank=True, null=True)
-    batas_ambil = models.DateTimeField(blank=True, null=True)
-    status_pengambilan = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'detail_peminjaman'
-
-
-class DjangoAdminLog(models.Model):
-    action_time = models.DateTimeField()
-    object_id = models.TextField(blank=True, null=True)
-    object_repr = models.CharField(max_length=200)
-    action_flag = models.SmallIntegerField()
-    change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'django_admin_log'
-
-
-class DjangoContentType(models.Model):
-    app_label = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'django_content_type'
-        unique_together = (('app_label', 'model'),)
-
-
-class DjangoMigrations(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    app = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    applied = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_migrations'
-
-
-class DjangoSession(models.Model):
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.TextField()
-    expire_date = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_session'
-
-
 class Guru(models.Model):
-    nuptk = models.CharField(primary_key=True, max_length=20)
+    id = models.AutoField(primary_key=True)  # ganti nuptk jadi PK auto
+    nuptk = models.CharField(max_length=20, unique=True)  # jadikan kolom unik biasa
     nama_guru = models.CharField(max_length=30)
     bidang = models.CharField(max_length=20, blank=True, null=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
@@ -158,12 +21,12 @@ class Guru(models.Model):
     password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'guru'
 
 
 class Pegawai(models.Model):
-    id_pegawai = models.CharField(primary_key=True, max_length=20)
+    id = models.AutoField(primary_key=True)  # ganti id_pegawai jadi PK auto
+    id_pegawai = models.CharField(max_length=20, unique=True, blank=True, null=True)
     nama_pegawai = models.CharField(max_length=30)
     bidang = models.CharField(max_length=20, blank=True, null=True)
     no_telp = models.CharField(max_length=20, blank=True, null=True)
@@ -171,26 +34,12 @@ class Pegawai(models.Model):
     password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'pegawai'
 
 
-class Peminjaman(models.Model):
-    kode_pinjam = models.CharField(primary_key=True, max_length=50)
-    nis = models.ForeignKey('Siswa', models.DO_NOTHING, db_column='nis', blank=True, null=True)
-    nuptk = models.ForeignKey(Guru, models.DO_NOTHING, db_column='nuptk', blank=True, null=True)
-    id_pegawai = models.ForeignKey(Pegawai, models.DO_NOTHING, db_column='id_pegawai', blank=True, null=True)
-    tanggal_pinjam = models.DateTimeField()
-    tanggal_kembali = models.DateTimeField(blank=True, null=True)
-    status_pinjam = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'peminjaman'
-
-
 class Siswa(models.Model):
-    nis = models.CharField(primary_key=True, max_length=20)
+    id = models.AutoField(primary_key=True)  # ganti nis jadi PK auto
+    nis = models.CharField(max_length=20, unique=True, blank=True, null=True)
     nama_siswa = models.CharField(max_length=30)
     kelas = models.CharField(max_length=15, blank=True, null=True)
     kartu_pelajar = models.BinaryField(blank=True, null=True)
@@ -199,5 +48,32 @@ class Siswa(models.Model):
     password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'siswa'
+
+
+class Peminjaman(models.Model):
+    id = models.AutoField(primary_key=True)  # ganti kode_pinjam jadi PK auto
+    kode_pinjam = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    nis = models.ForeignKey(Siswa, models.DO_NOTHING, db_column='nis', blank=True, null=True)
+    nuptk = models.ForeignKey(Guru, models.DO_NOTHING, db_column='nuptk', blank=True, null=True)
+    id_pegawai = models.ForeignKey(Pegawai, models.DO_NOTHING, db_column='id_pegawai', blank=True, null=True)
+    tanggal_pinjam = models.DateTimeField()
+    tanggal_kembali = models.DateTimeField(blank=True, null=True)
+    status_pinjam = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'peminjaman'
+
+
+class DetailPeminjaman(models.Model):
+    id = models.AutoField(primary_key=True)  # ganti kode_detail jadi PK auto
+    kode_detail = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    id_peminjaman = models.ForeignKey(Peminjaman, models.DO_NOTHING, db_column='id_peminjaman')
+    id_barang = models.ForeignKey(Barang, models.DO_NOTHING, db_column='id_barang')
+    jumlah = models.IntegerField()
+    waktu_pengambilan = models.DateTimeField(blank=True, null=True)
+    batas_ambil = models.DateTimeField(blank=True, null=True)
+    status_pengambilan = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'detail_peminjaman'

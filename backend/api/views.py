@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework import status
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
@@ -12,7 +11,7 @@ from django.db.models import Sum, Count
 from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , PeminjamanSerializer , DetailPeminjamanSerializer ,PegawaiSerializer
 
 @api_view(['GET'])
-def get_barang( request):
+def get_barang(request):
     barang = Barang.objects.all()
     serializer = BarangSerializer(barang, many=True)
     return Response(serializer.data)

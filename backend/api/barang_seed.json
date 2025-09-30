@@ -1,0 +1,202 @@
+[
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Bola Sepak",
+			"jumlah": 15,
+			"kategori": "Olahraga",
+			"deskripsi": "Bola sepak standar ukuran 5",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Meja Belajar",
+			"jumlah": 10,
+			"kategori": "Furniture",
+			"deskripsi": "Meja belajar kayu minimalis",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Kursi Kantor",
+			"jumlah": 20,
+			"kategori": "Furniture",
+			"deskripsi": "Kursi kantor ergonomis",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Laptop Asus",
+			"jumlah": 5,
+			"kategori": "Elektronik",
+			"deskripsi": "Laptop Asus terbaru model 2025",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Printer HP",
+			"jumlah": 3,
+			"kategori": "Elektronik",
+			"deskripsi": "Printer HP multifungsi",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Buku Tulis",
+			"jumlah": 100,
+			"kategori": "Alat Tulis",
+			"deskripsi": "Buku tulis bergaris 100 halaman",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Pulpen",
+			"jumlah": 200,
+			"kategori": "Alat Tulis",
+			"deskripsi": "Pulpen tinta biru",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Tas Ransel",
+			"jumlah": 30,
+			"kategori": "Aksesoris",
+			"deskripsi": "Tas ransel untuk sekolah",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Sepatu Olahraga",
+			"jumlah": 25,
+			"kategori": "Olahraga",
+			"deskripsi": "Sepatu olahraga ukuran 42",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Kamera DSLR",
+			"jumlah": 2,
+			"kategori": "Elektronik",
+			"deskripsi": "Kamera DSLR untuk fotografi profesional",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Mouse Wireless",
+			"jumlah": 15,
+			"kategori": "Elektronik",
+			"deskripsi": "Mouse wireless dengan baterai tahan lama",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Keyboard Mechanical",
+			"jumlah": 10,
+			"kategori": "Elektronik",
+			"deskripsi": "Keyboard mechanical untuk gaming",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Flashdisk 64GB",
+			"jumlah": 50,
+			"kategori": "Elektronik",
+			"deskripsi": "Flashdisk USB 3.0 kapasitas 64GB",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Lampu Meja",
+			"jumlah": 18,
+			"kategori": "Furniture",
+			"deskripsi": "Lampu meja dengan pencahayaan LED",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Headset Gaming",
+			"jumlah": 12,
+			"kategori": "Elektronik",
+			"deskripsi": "Headset dengan mikrofon noise cancelling",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Whiteboard",
+			"jumlah": 7,
+			"kategori": "Peralatan Kantor",
+			"deskripsi": "Whiteboard ukuran 120x90 cm",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Penghapus Papan",
+			"jumlah": 25,
+			"kategori": "Peralatan Kantor",
+			"deskripsi": "Penghapus papan tulis kering",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Papan Tulis",
+			"jumlah": 4,
+			"kategori": "Peralatan Kantor",
+			"deskripsi": "Papan tulis hitam ukuran besar",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Kalkulator",
+			"jumlah": 20,
+			"kategori": "Peralatan Kantor",
+			"deskripsi": "Kalkulator scientific 12 digit",
+			"img": null
+		}
+	},
+	{
+		"model": "api.barang",
+		"fields": {
+			"nama_barang": "Stapler",
+			"jumlah": 40,
+			"kategori": "Peralatan Kantor",
+			"deskripsi": "Stapler standar ukuran kecil",
+			"img": null
+		}
+	}
+]

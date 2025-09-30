@@ -1,20 +1,20 @@
 <script lang="ts">
-	import Sidebar from '$lib/component/sidebars.svelte';
-	import Aktivitas from '$lib/component/content/dashboard.svelte';
-	import Analisis from '$lib/component/content/Analytics.svelte';
-	import Pengguna from '$lib/component/content/user.svelte';
-	import Barang from '$lib/component/content/barang.svelte';
-	import Laporan from '$lib/component/content/Reports.svelte';
-	import Pengaturan from '$lib/component/content/Settings.svelte';
-	import TambahBarang from '$lib/tambah/tambahbarang.svelte';
-	import TambahUser from '$lib/tambah/tambahUser.svelte';
-	import Update from '../update/update.svelte';
-	import Detail from '$lib/component/content/detail.svelte';
-	import DetailDashboard from '$lib/detailStatus/detailDashboard.svelte';
-	import Scanqr from '$lib/component/content/scanqr.svelte';
-	import DetailPeminjaman from '$lib/detailStatus/detailPeminjaman.svelte';
-	import ScanPengembalian from '$lib/component/content/scanpengembalian.svelte';
-	import UpdateUser from '../update/updateuser.svelte';
+	import Sidebar from '$lib/components/sidebars.svelte';
+	import Aktivitas from '$lib/components/content/dashboard.svelte';
+	import Analisis from '$lib/components/content/Analytics.svelte';
+	import Pengguna from '$lib/components/content/user.svelte';
+	import Barang from '$lib/components/content/barang.svelte';
+	import Laporan from '$lib/components/content/Reports.svelte';
+	import Pengaturan from '$lib/components/content/Settings.svelte';
+	import TambahBarang from '$lib/components/tambah/tambahbarang.svelte';
+	import TambahUser from '$lib/components/tambah/tambahUser.svelte';
+	import Update from '$lib/components/update/update.svelte';
+	import UpdateUser from '$lib/components/update/updateuser.svelte';
+	import Detail from '$lib/components/content/detail.svelte';
+	import DetailDashboard from '$lib/components/detailStatus/detailDashboard.svelte';
+	import Scanqr from '$lib/components/content/scanqr.svelte';
+	import DetailPeminjaman from '$lib/components/detailStatus/detailPeminjaman.svelte';
+	import ScanPengembalian from '$lib/components/content/scanpengembalian.svelte';
 
 	import type { Component } from 'svelte';
 
