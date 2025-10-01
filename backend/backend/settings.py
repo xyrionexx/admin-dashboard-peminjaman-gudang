@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-qz4h#a18kjkzhcye57hr$w$glnpkr@h*0(en*lxsjmk0cv^l+d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'api.borrowfy.site',
+]
 
 
 # Application definition
