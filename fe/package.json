@@ -113,6 +113,7 @@
 		"crypto-js": "^4.2.0",
 		"date-fns": "^4.1.0",
 		"dotenv": "^17.2.2",
+		"dotenv-cli": "^10.0.0",
 		"drizzle-orm": "^0.40.1",
 		"html5-qrcode": "^2.3.8",
 		"mode-watcher": "^1.1.0",
