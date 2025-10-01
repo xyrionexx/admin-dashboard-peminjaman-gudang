@@ -25,8 +25,8 @@
 	onMount(async () => {
 		try {
 			const [resPeminjaman, resSummary] = await Promise.all([
-				fetch('http://127.0.0.1:8000/api/peminjaman/'),
-				fetch('http://127.0.0.1:8000/api/barang/summary')
+				fetch('https://api.borrowfy.site/api/peminjaman/'),
+				fetch('https://api.borrowfy.site/api/barang/summary')
 			]);
 			if (!resPeminjaman.ok || !resSummary.ok) {
 				throw new Error('Gagal ambil data');

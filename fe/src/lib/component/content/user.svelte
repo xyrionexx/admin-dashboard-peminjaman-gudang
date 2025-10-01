@@ -32,9 +32,9 @@
 	onMount(async () => {
 		try {
 			const [resSiswa, resGuru, resPegawai] = await Promise.all([
-				fetch('http://127.0.0.1:8000/api/siswa/'),
-				fetch('http://127.0.0.1:8000/api/guru/'),
-				fetch('http://127.0.0.1:8000/api/pegawai')
+				fetch('https://api.borrowfy.site/api/siswa/'),
+				fetch('https://api.borrowfy.site/api/guru/'),
+				fetch('https://api.borrowfy.site/api/pegawai')
 			]);
 
 			siswa = await resSiswa.json();
@@ -119,15 +119,15 @@
 		try {
 			let res;
 			if (kategori === 'Siswa') {
-				res = await fetch(`http://127.0.0.1:8000/api/siswa/delete/${id}/`, {
+				res = await fetch(`https://api.borrowfy.site/api/siswa/delete/${id}/`, {
 					method: 'DELETE'
 				});
 			} else if (kategori === 'Guru') {
-				res = await fetch(`http://127.0.0.1:8000/api/guru/delete/${id}/`, {
+				res = await fetch(`https://api.borrowfy.site/api/guru/delete/${id}/`, {
 					method: 'DELETE'
 				});
 			} else if (kategori === 'Pegawai') {
-				res = await fetch(`http://127.0.0.1:8000/api/pegawai/delete/${id}/`, {
+				res = await fetch(`https://api.borrowfy.site/api/pegawai/delete/${id}/`, {
 					method: 'DELETE'
 				});
 			}

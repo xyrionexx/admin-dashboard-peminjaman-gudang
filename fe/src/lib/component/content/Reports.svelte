@@ -55,7 +55,7 @@
 		console.log('Component mounted, fetching data...');
 		try {
 			// The correct endpoint based on urls.py
-			const apiUrl = 'http://127.0.0.1:8000/api/detail/peminjaman/list';
+			const apiUrl = 'https://api.borrowfy.site/api/detail/peminjaman/list';
 			console.log('Fetching from:', apiUrl);
 
 			const response = await fetch(apiUrl);
@@ -91,7 +91,7 @@
 			// Fallback to the other possible endpoint
 			try {
 				console.log('Trying fallback endpoint...');
-				const fallbackUrl = 'http://127.0.0.1:8000/api/detail/peminjaman/list';
+				const fallbackUrl = 'https://api.borrowfy.site/api/detail/peminjaman/list';
 				const fallbackResponse = await fetch(fallbackUrl);
 
 				if (fallbackResponse.ok) {

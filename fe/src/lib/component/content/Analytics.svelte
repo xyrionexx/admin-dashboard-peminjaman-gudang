@@ -69,7 +69,7 @@
 		try {
 			console.log('Starting API fetch operations...');
 			console.log('Fetching peminjaman data...');
-			const res = await fetch('http://127.0.0.1:8000/api/peminjaman/');
+			const res = await fetch('https://api.borrowfy.site/api/peminjaman/');
 			if (!res.ok)
 				throw new Error(
 					'Gagal mengambil data peminjaman: ' + res.statusText + ' (Status: ' + res.status + ')'
@@ -90,7 +90,7 @@
 
 			// Fetch data detail peminjaman untuk pie chart
 			console.log('Fetching detail peminjaman data...');
-			const resDetail = await fetch('http://127.0.0.1:8000/api/detail/peminjaman');
+			const resDetail = await fetch('https://api.borrowfy.site/api/detail/peminjaman');
 			if (!resDetail.ok)
 				throw new Error(
 					'Gagal mengambil detail peminjaman: ' +
@@ -104,7 +104,7 @@
 
 			// Fetch data barang untuk pie chart
 			console.log('Fetching barang data...');
-			const resBarang = await fetch('http://127.0.0.1:8000/api/barang/');
+			const resBarang = await fetch('https://api.borrowfy.site/api/barang/');
 			if (!resBarang.ok)
 				throw new Error(
 					'Gagal mengambil data barang: ' +
