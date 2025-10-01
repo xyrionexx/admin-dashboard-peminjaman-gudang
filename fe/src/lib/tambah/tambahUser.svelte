@@ -72,7 +72,7 @@
 				throw new Error(errorMessage);
 			}
 
-			const response = await fetch(`http://127.0.0.1:8000/api/user/${endpoint}`, {
+			const response = await fetch(`https://api.borrowfy.site/api/user/${endpoint}`, {
 				method: 'POST',
 				body: bodyData instanceof FormData ? bodyData : JSON.stringify(bodyData),
 				headers: bodyData instanceof FormData ? undefined : { 'Content-Type': 'application/json' }

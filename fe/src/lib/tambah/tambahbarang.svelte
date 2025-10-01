@@ -30,7 +30,7 @@
 			bodyData.append('deskripsi', deskripsi);
 			if (img) bodyData.append('img', img);
 
-			const response = await fetch('http://127.0.0.1:8000/api/barang/tambah_barang/', {
+			const response = await fetch('https://api.borrowfy.site/api/barang/tambah_barang/', {
 				method: 'POST',
 				body: bodyData instanceof FormData ? bodyData : JSON.stringify(bodyData)
 			});
