@@ -1,98 +1,222 @@
 [
-    {
-      "model": "your_app.barang",
-      "pk": "BRG001",
-      "fields": {
-        "nama_barang": "Laptop ASUS",
-        "jumlah": 10,
-        "kategori": "Elektronik",
-        "deskripsi": "Laptop ASUS 14 inch untuk keperluan kerja.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG002",
-      "fields": {
-        "nama_barang": "Proyektor Epson",
-        "jumlah": 5,
-        "kategori": "Elektronik",
-        "deskripsi": "Proyektor untuk presentasi dan rapat.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG003",
-      "fields": {
-        "nama_barang": "Kursi Lipat",
-        "jumlah": 50,
-        "kategori": "Perabot",
-        "deskripsi": "Kursi lipat ringan untuk acara indoor dan outdoor.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG004",
-      "fields": {
-        "nama_barang": "Meja Meeting",
-        "jumlah": 12,
-        "kategori": "Perabot",
-        "deskripsi": "Meja besar untuk ruang rapat.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG005",
-      "fields": {
-        "nama_barang": "Speaker Aktif",
-        "jumlah": 8,
-        "kategori": "Elektronik",
-        "deskripsi": "Speaker aktif untuk acara besar.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG006",
-      "fields": {
-        "nama_barang": "Papan Tulis",
-        "jumlah": 15,
-        "kategori": "Peralatan Kantor",
-        "deskripsi": "Papan tulis whiteboard magnetik.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG007",
-      "fields": {
-        "nama_barang": "Printer Canon",
-        "jumlah": 6,
-        "kategori": "Elektronik",
-        "deskripsi": "Printer multifungsi untuk cetak dan scan.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG008",
-      "fields": {
-        "nama_barang": "Kabel HDMI",
-        "jumlah": 30,
-        "kategori": "Aksesoris",
-        "deskripsi": "Kabel HDMI 2 meter untuk koneksi laptop dan proyektor.",
-        "img": null
-      }
-    },
-    {
-      "model": "your_app.barang",
-      "pk": "BRG009",
-      "fields": {
-        "nama_barang": "AC Portable",
-        "jumlah": 4,
-        "kategori": "Elektronik",
-        "desk
-  
+  {
+    "model": "your_app.barang",
+    "pk": "BRG001",
+    "fields": {
+      "nama_barang": "Laptop ASUS",
+      "jumlah": 10,
+      "kategori": "Elektronik",
+      "deskripsi": "Laptop ASUS 14 inch untuk keperluan kerja.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG002",
+    "fields": {
+      "nama_barang": "Proyektor Epson",
+      "jumlah": 5,
+      "kategori": "Elektronik",
+      "deskripsi": "Proyektor untuk presentasi dan rapat.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG003",
+    "fields": {
+      "nama_barang": "Kursi Lipat",
+      "jumlah": 50,
+      "kategori": "Perabot",
+      "deskripsi": "Kursi lipat ringan untuk acara indoor dan outdoor.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG004",
+    "fields": {
+      "nama_barang": "Meja Meeting",
+      "jumlah": 12,
+      "kategori": "Perabot",
+      "deskripsi": "Meja besar untuk ruang rapat.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG005",
+    "fields": {
+      "nama_barang": "Speaker Aktif",
+      "jumlah": 8,
+      "kategori": "Elektronik",
+      "deskripsi": "Speaker aktif untuk acara besar.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG006",
+    "fields": {
+      "nama_barang": "Papan Tulis",
+      "jumlah": 15,
+      "kategori": "Peralatan Kantor",
+      "deskripsi": "Papan tulis whiteboard magnetik.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG007",
+    "fields": {
+      "nama_barang": "Printer Canon",
+      "jumlah": 6,
+      "kategori": "Elektronik",
+      "deskripsi": "Printer multifungsi untuk cetak dan scan.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG008",
+    "fields": {
+      "nama_barang": "Kabel HDMI",
+      "jumlah": 30,
+      "kategori": "Aksesoris",
+      "deskripsi": "Kabel HDMI 2 meter untuk koneksi laptop dan proyektor.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG009",
+    "fields": {
+      "nama_barang": "AC Portable",
+      "jumlah": 4,
+      "kategori": "Elektronik",
+      "deskripsi": "Pendingin ruangan portabel untuk ruang acara.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG010",
+    "fields": {
+      "nama_barang": "Mikrofon Wireless",
+      "jumlah": 10,
+      "kategori": "Elektronik",
+      "deskripsi": "Mikrofon nirkabel untuk acara dan rapat.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG011",
+    "fields": {
+      "nama_barang": "Standing Banner",
+      "jumlah": 20,
+      "kategori": "Perlengkapan Acara",
+      "deskripsi": "Standing banner untuk promosi atau informasi acara.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG012",
+    "fields": {
+      "nama_barang": "Kipas Angin",
+      "jumlah": 10,
+      "kategori": "Elektronik",
+      "deskripsi": "Kipas angin berdiri untuk ventilasi ruangan.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG013",
+    "fields": {
+      "nama_barang": "Layar Proyektor",
+      "jumlah": 7,
+      "kategori": "Elektronik",
+      "deskripsi": "Layar besar untuk menampilkan proyeksi.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG014",
+    "fields": {
+      "nama_barang": "Rak Buku",
+      "jumlah": 9,
+      "kategori": "Perabot",
+      "deskripsi": "Rak kayu untuk menyimpan buku atau dokumen.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG015",
+    "fields": {
+      "nama_barang": "Stop Kontak",
+      "jumlah": 25,
+      "kategori": "Aksesoris",
+      "deskripsi": "Stop kontak 4 lubang dengan saklar.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG016",
+    "fields": {
+      "nama_barang": "Kamera DSLR",
+      "jumlah": 3,
+      "kategori": "Elektronik",
+      "deskripsi": "Kamera DSLR Canon untuk dokumentasi acara.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG017",
+    "fields": {
+      "nama_barang": "Tripod Kamera",
+      "jumlah": 6,
+      "kategori": "Aksesoris",
+      "deskripsi": "Tripod ringan dan tinggi untuk kamera.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG018",
+    "fields": {
+      "nama_barang": "Dispenser",
+      "jumlah": 5,
+      "kategori": "Perlengkapan Umum",
+      "deskripsi": "Dispenser air panas dan dingin.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG019",
+    "fields": {
+      "nama_barang": "Gunting Rumput",
+      "jumlah": 4,
+      "kategori": "Peralatan Kebersihan",
+      "deskripsi": "Gunting rumput manual untuk taman.",
+      "img": null
+    }
+  },
+  {
+    "model": "your_app.barang",
+    "pk": "BRG020",
+    "fields": {
+      "nama_barang": "Tangga Lipat",
+      "jumlah": 5,
+      "kategori": "Peralatan Umum",
+      "deskripsi": "Tangga lipat aluminium untuk perawatan gedung.",
+      "img": null
+    }
+  }
+]
