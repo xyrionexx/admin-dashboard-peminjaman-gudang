@@ -1,0 +1,98 @@
+[
+    {
+      "model": "your_app.barang",
+      "pk": "BRG001",
+      "fields": {
+        "nama_barang": "Laptop ASUS",
+        "jumlah": 10,
+        "kategori": "Elektronik",
+        "deskripsi": "Laptop ASUS 14 inch untuk keperluan kerja.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG002",
+      "fields": {
+        "nama_barang": "Proyektor Epson",
+        "jumlah": 5,
+        "kategori": "Elektronik",
+        "deskripsi": "Proyektor untuk presentasi dan rapat.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG003",
+      "fields": {
+        "nama_barang": "Kursi Lipat",
+        "jumlah": 50,
+        "kategori": "Perabot",
+        "deskripsi": "Kursi lipat ringan untuk acara indoor dan outdoor.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG004",
+      "fields": {
+        "nama_barang": "Meja Meeting",
+        "jumlah": 12,
+        "kategori": "Perabot",
+        "deskripsi": "Meja besar untuk ruang rapat.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG005",
+      "fields": {
+        "nama_barang": "Speaker Aktif",
+        "jumlah": 8,
+        "kategori": "Elektronik",
+        "deskripsi": "Speaker aktif untuk acara besar.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG006",
+      "fields": {
+        "nama_barang": "Papan Tulis",
+        "jumlah": 15,
+        "kategori": "Peralatan Kantor",
+        "deskripsi": "Papan tulis whiteboard magnetik.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG007",
+      "fields": {
+        "nama_barang": "Printer Canon",
+        "jumlah": 6,
+        "kategori": "Elektronik",
+        "deskripsi": "Printer multifungsi untuk cetak dan scan.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG008",
+      "fields": {
+        "nama_barang": "Kabel HDMI",
+        "jumlah": 30,
+        "kategori": "Aksesoris",
+        "deskripsi": "Kabel HDMI 2 meter untuk koneksi laptop dan proyektor.",
+        "img": null
+      }
+    },
+    {
+      "model": "your_app.barang",
+      "pk": "BRG009",
+      "fields": {
+        "nama_barang": "AC Portable",
+        "jumlah": 4,
+        "kategori": "Elektronik",
+        "desk
+  
