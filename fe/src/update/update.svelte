@@ -19,7 +19,7 @@
 	onMount(async () => {
 		if (!id) return;
 		try {
-			const res = await fetch(`http://127.0.0.1:8000/api/barang/${id}/`);
+			const res = await fetch(`https://api.borrowfy.site/api/barang/${id}/`);
 			if (!res.ok) throw new Error('Data tidak ditemukan');
 			const data = await res.json();
 			nama = data.nama_barang;
@@ -53,7 +53,7 @@
 				formData.append('deskripsi', deskripsi);
 				formData.append('img', img);
 				
-				const res = await fetch(`http://127.0.0.1:8000/api/barang/${id}/`, {
+				const res = await fetch(`https://api.borrowfy.site/api/barang/${id}/`, {
 					method: 'PUT',
 					body: formData
 				});
@@ -63,7 +63,7 @@
 				setTimeout(() => dispatch('pageChange', { page: 'Barang' }), 1500);
 			} else {
 				// If no new image, use JSON
-				const res = await fetch(`http://127.0.0.1:8000/api/barang/${id}/`, {
+				const res = await fetch(`https://api.borrowfy.site/api/barang/${id}/`, {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ nama_barang: nama, jumlah, kategori, deskripsi })

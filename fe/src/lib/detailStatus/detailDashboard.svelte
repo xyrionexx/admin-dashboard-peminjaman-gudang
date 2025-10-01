@@ -15,7 +15,7 @@
 		console.log('🔍 Fetch dengan id:', props.id);
 
 		try {
-			const res = await fetch(`http://127.0.0.1:8000/api/peminjaman/${props.id}/`);
+			const res = await fetch(`https://api.borrowfy.site/api/peminjaman/${props.id}/`);
 			console.log('📡 Status response:', res.status);
 
 			if (!res.ok) {
