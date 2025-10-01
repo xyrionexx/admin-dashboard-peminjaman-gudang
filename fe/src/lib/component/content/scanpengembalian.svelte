@@ -31,7 +31,7 @@
 
 	async function updateStatus(kode_detail: string) {
 		try {
-			const res = await fetch('http://127.0.0.1:8000/api/detail/detail-update-status/', {
+			const res = await fetch('https://api.borrowfy.site/api/detail/detail-update-status/', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ kode_detail })
