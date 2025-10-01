@@ -6,8 +6,6 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
-
 class Barang(models.Model):
     id_barang = models.CharField(primary_key=True, max_length=20)
     nama_barang = models.CharField(max_length=20)
@@ -34,7 +32,6 @@ class DetailPeminjaman(models.Model):
         managed = True
         db_table = 'detail_peminjaman'
 
-
 class Guru(models.Model):
     nuptk = models.CharField(primary_key=True, max_length=20)
     nama_guru = models.CharField(max_length=30)
@@ -60,6 +57,19 @@ class Pegawai(models.Model):
         managed = True
         db_table = 'pegawai'
 
+class Siswa(models.Model):
+    nis = models.CharField(primary_key=True, max_length=20)
+    nama_siswa = models.CharField(max_length=30)
+    kelas = models.CharField(max_length=15, blank=True, null=True)
+    kartu_pelajar = models.BinaryField(blank=True, null=True)
+    no_telp = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=30, blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'siswa'
+
 
 class Peminjaman(models.Model):
     kode_pinjam = models.CharField(primary_key=True, max_length=50)
@@ -75,15 +85,4 @@ class Peminjaman(models.Model):
         db_table = 'peminjaman'
 
 
-class Siswa(models.Model):
-    nis = models.CharField(primary_key=True, max_length=20)
-    nama_siswa = models.CharField(max_length=30)
-    kelas = models.CharField(max_length=15, blank=True, null=True)
-    kartu_pelajar = models.BinaryField(blank=True, null=True)
-    no_telp = models.CharField(max_length=20, blank=True, null=True)
-    email = models.CharField(max_length=30, blank=True, null=True)
-    password = models.CharField(max_length=100, blank=True, null=True)
 
-    class Meta:
-        managed = True
-        db_table = 'siswa'
