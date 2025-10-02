@@ -2,6 +2,11 @@ from django.urls import path
 import api.views as v 
 
 urlpatterns = [
+    # autentikasi
+    path('register/', v.auth, {'authType': 'register'}, name='register'),
+    path('login/', v.auth, {'authType': 'login'}, name='login'),
+    
+    # ambil data
     path('barang/', v.get_barang, name='get_barang'),
     path('siswa/', v.get_siswa, name='get_siswa'),
     path('guru/', v.get_guru, name='get_guru'),
@@ -29,7 +34,4 @@ urlpatterns = [
     path('update/<str:kategori>/<str:id>/', v.detail_user, name='detail_user'),
     path("detail/update-status/", v.update_status, name="update_status"),
     path("detail/detail-update-status/", v.scan_pengembalian, name="update_status"),
-
-
-
 ]

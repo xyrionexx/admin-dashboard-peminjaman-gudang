@@ -4,12 +4,20 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework import status
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
 from django.db.models import Sum, Count
 from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , PeminjamanSerializer , DetailPeminjamanSerializer ,PegawaiSerializer
+from .handle_auth import register, login
+
+@api_view(['POST'])
+# auth (login & register)
+def auth(request, authType='register'):
+    if authType == 'register':
+        register(request)
+    else :
+        login(request)
 
 @api_view(['GET'])
 def get_barang( request):
@@ -64,7 +72,6 @@ def delete_siswa(request, id):
         return JsonResponse({"message": "Siswa berhasil dihapus"}, status=200)
    return JsonResponse({"error": "Method not allowed"}, status=405)
     
-@csrf_exempt   
 def delete_guru(request, id):
     if request.method == "DELETE":
         try:
@@ -75,8 +82,6 @@ def delete_guru(request, id):
             return JsonResponse({"error": "Guru tidak ditemukan"}, status=404)
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
-
-@csrf_exempt   
 def delete_pegawai(request, id):
     if request.method == "DELETE":
         try:
