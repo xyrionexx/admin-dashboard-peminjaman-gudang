@@ -7,6 +7,7 @@ urlpatterns = [
     path('login/', v.auth, {'authType': 'login'}, name='login'),
     
     # ambil data
+    path('user/', v.getUserSession, name='getUserSession'),
     path('barang/', v.get_barang, name='get_barang'),
     path('siswa/', v.get_siswa, name='get_siswa'),
     path('guru/', v.get_guru, name='get_guru'),

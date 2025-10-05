@@ -4,7 +4,8 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from django import forms
 
-class UserCredentialsForm(forms.form):
+class UserCredentialsForm(forms.Form):
+    username = forms.CharField(max_length=50, required=False)
     email = forms.CharField(max_length=50)
     password = forms.CharField(widget=forms.PasswordInput)
     remember_me = forms.BooleanField(required=False)
@@ -13,33 +14,52 @@ def validateUserCredentials(credentials):
     userForm = UserCredentialsForm(credentials)
     
     if not userForm.is_valid():
-        return JsonResponse({
-            'ErrMessage': "Maaf kayaknya di input kamu ada yang salah deh... Coba input lagi",
-            "Error": userForm.errors
-        }, status=400)
+        raise Exception({
+            'ErrMsg': 'Itu di input kamu kayak ada yang salah deh atau ngga sesuai',
+            'Error': userForm.errors,
+            'status': 400
+        })
         
     return userForm
 
 def register(request):
-    userForm = validateUserCredentials(request.POST)
-    
-    # ambil user credentials
-    email, password = map(lambda credential: userForm.cleaned_data.get(credential), ["email", "password"])
+    try:
+        userForm = validateUserCredentials(request.data)
 
-    # membuat objek user
-    user = User.objects.create_user(username="", email=email, password=password)
+        # Ambil user credentials
+        username, email, password = map(
+            lambda credential: userForm.cleaned_data.get(credential),
+            ["username", "email", "password"]
+        )
 
-    # simpan data user
-    user.save()
+        # Membuat objek user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        # Simpan data user
+        user.save()
+
+        return HttpResponse("Yay! akun mu berhasil dibuat :D", status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'ErrMsg': str(e) if 'ErrMsg' not in e.__dict__ else e['ErrMsg'],
+            'Error': str(e) if 'Error' not in e.__dict__ else e['Error']
+        }, status=500 if 'status' not in e.__dict__ else e['status'])
+
 
 def login(request):
-    userForm = validateUserCredentials(request.POST)
+    userForm = validateUserCredentials(request.data)
         
     # ambil user credentials
-    email, password, remember_me = map(lambda credential: userForm.cleaned_data.get(credential), ['email', 'password', 'remember_me'])
+    credentials = ['username', 'email', 'password', 'remember_me']
+    username, email, password, remember_me = map(lambda credential: userForm.cleaned_data.get(credential), credentials)
 
     # validasi user credentials
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=username, email=email, password=password)
     
     if not user:
         return JsonResponse({
@@ -47,7 +67,7 @@ def login(request):
         }, status=400)
     
     # membuat sesi pengguna
-    login(request, user)
+    login(request)
 
     if remember_me:
         request.session.set_expiry(30 * 24 * 60 * 60) # set remember_me selama 30 hari

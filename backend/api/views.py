@@ -1,10 +1,9 @@
 # barang/views.py
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from rest_framework import status
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
 from django.db.models import Sum, Count
@@ -12,12 +11,26 @@ from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , P
 from .handle_auth import register, login
 
 @api_view(['POST'])
+# mengambil user session
+def getUserSession(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("User belum login", status=401)
+    else:
+        user_data = {
+            'id': request.user.id,
+            'email': request.user.email,
+            'username': request.user.username,
+        }
+        
+        return JsonResponse({'user': user_data}, status=200)
+
+@api_view(['POST'])
 # auth (login & register)
 def auth(request, authType='register'):
     if authType == 'register':
-        register(request)
+        return register(request)
     else :
-        login(request)
+        return login(request)
 
 @api_view(['GET'])
 def get_barang( request):
