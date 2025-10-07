@@ -33,43 +33,43 @@ def auth(request, authType='register'):
         return login(request)
 
 @api_view(['GET'])
-def get_barang( request):
+def get_barang():
     barang = Barang.objects.all()
     serializer = BarangSerializer(barang, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_siswa(request):
+def get_siswa():
     siswa = Siswa.objects.all()
     serializer = SiswaSerializer(siswa, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_guru(request):
+def get_guru():
     guru = Guru.objects.all()
     serializer = GuruSerializer(guru, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_pegawai(request):
+def get_pegawai():
     pegawai = Pegawai.objects.all()
     serializer = PegawaiSerializer(pegawai, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_Peminjaman(request):
+def get_Peminjaman():
     peminjaman = Peminjaman.objects.all()
     serializer = PeminjamanSerializer(peminjaman, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_detail_peminjaman(request):
+def get_detail_peminjaman():
     detailPeminjaman = DetailPeminjaman.objects.all()
     serializer = DetailPeminjamanSerializer(detailPeminjaman, many=True)
     return Response(serializer.data)
 
 @api_view(['DELETE'])
-def delete_barang(request , id):
+def delete_barang(id):
     try:
         barang = Barang.objects.get(id_barang=id)
         barang.delete()
