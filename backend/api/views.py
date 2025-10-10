@@ -9,6 +9,11 @@ from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
 from django.db.models import Sum, Count
 from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , PeminjamanSerializer , DetailPeminjamanSerializer ,PegawaiSerializer
 from .handle_auth import register, login
+from django.contrib.auth import logout
+from django.middleware.csrf import get_token
+
+def csrf(request):
+    return JsonResponse({'csrfToken': get_token(request)})
 
 @api_view(['POST'])
 # mengambil user session
@@ -31,6 +36,13 @@ def auth(request, authType='register'):
         return register(request)
     else :
         return login(request)
+    
+@api_view(['POST'])
+# logout
+def logOut(request):
+    logout(request)
+    HttpResponse("berhasil logout", status=200)
+    
 
 @api_view(['GET'])
 def get_barang():

@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from django import forms
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserCredentialsForm(forms.Form):
     username = forms.CharField(max_length=50, required=False)
@@ -59,7 +60,6 @@ def login(request):
     username, email, password, remember_me = map(lambda credential: userForm.cleaned_data.get(credential), credentials)
 
     # validasi user credentials
-
     user = authenticate(request, username=username, email=email, password=password)
     
     if not user:
@@ -73,6 +73,14 @@ def login(request):
     if remember_me:
         request.session.set_expiry(30 * 24 * 60 * 60) # set remember_me selama 30 hari
         
+    # Generate token
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+    
+    # Simpan token di session
+    request.session['jwt_token'] = access_token
+    request.session.save()
+
     return JsonResponse({
         'id': request.user.id,
         'username': request.user.username,

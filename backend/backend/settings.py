@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qz4h#a18kjkzhcye57hr$w$glnpkr@h*0(en*lxsjmk0cv^l+d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -62,14 +62,14 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,3 +138,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # SESSION AGE
 SESSION_COOKIE_AGE = 86400  # satu hari dalam detik
+
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = False  # tetap False karena kamu masih pakai HTTP lokal
+CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SECURE = False
+
+LOGIN_URL = '/api/login/'
