@@ -21,8 +21,8 @@
 	onMount(async () => {
 		try {
 			const [resData, resSummary] = await Promise.all([
-				fetch('https://api.borrowfy.site/api/barang/'),
-				fetch('https://api.borrowfy.site/api/barang/summary/')
+				fetch('http://127.0.0.1:8000/api/barang/'),
+				fetch('http://127.0.0.1:8000/api/barang/summary/')
 			]);
 			if (!resData.ok || !resSummary.ok) {
 				throw new Error('Gagal ambil data');
@@ -56,7 +56,7 @@
 		if (!confirm('Apakah anda yakin ingin menghapus data ini ?')) return;
 
 		try {
-			const res = await fetch(`https://api.borrowfy.site/api/barang/delete/${id}/`, {
+			const res = await fetch(`http://127.0.0.1:8000/api/barang/delete/${id}/`, {
 				method: 'DELETE'
 			});
 			if (!res.ok) {

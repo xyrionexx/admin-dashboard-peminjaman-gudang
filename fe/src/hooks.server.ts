@@ -1,16 +1,26 @@
 import { sequence } from '@sveltejs/kit/hooks';
-import * as auth from '$lib/server/auth';
+import * as auth from '$lib/server/auth.js';
 import type { Handle } from '@sveltejs/kit';
-import { paraglideMiddleware } from '$lib/paraglide/server';
+// Removing paraglideMiddleware as it's causing errors
 
-const handleParaglide: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request, locale }) => {
-		event.request = request;
-
-		return resolve(event, {
-			transformPageChunk: ({ html }) => html.replace('%paraglide.lang%', locale)
-		});
+// Simplified handle function without paraglide
+const handleLocale: Handle = ({ event, resolve }) => {
+	// Set default locale
+	const locale = 'id';
+	return resolve(event, {
+		transformPageChunk: ({ html }) => html.replace('%lang%', locale)
 	});
+};
+
+// Add type declarations for app.locals
+declare global {
+	namespace App {
+		interface Locals {
+			user: auth.User | null;
+			session: auth.Session | null;
+		}
+	}
+}
 
 const handleAuth: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
@@ -34,4 +44,4 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle: Handle = sequence(handleParaglide, handleAuth);
+export const handle: Handle = sequence(handleLocale, handleAuth);

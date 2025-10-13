@@ -1,9 +1,35 @@
 from django.urls import path
 import api.views as v 
+import api.handle_auth as auth_handlers
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+
+# Endpoint untuk mendapatkan CSRF token
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({'detail': 'CSRF cookie set'})
+
 
 urlpatterns = [
+    # CSRF token endpoint
+    path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
+    
+    # autentikasi
+    path('register/', v.auth, {'authType': 'register'}, name='register'),
+    path('login/', v.auth, {'authType': 'login'}, name='login'),
+    path('logout/', v.logout, name='logout'),
+    path('api/admin/login/', v.admin_login_view),
+    
+    # Session management untuk aplikasi frontend
+    path('api/auth/validate-token/', auth_handlers.validate_token, name='validate_token'),
+    path('api/auth/create-session/', auth_handlers.create_session, name='create_session'),
+    path('api/auth/renew-session/', auth_handlers.renew_session, name='renew_session'),
+    path('api/auth/invalidate-session/', auth_handlers.invalidate_session, name='invalidate_session'),
+
+    # ambil data
+    path('csrf/', v.csrf),
+    path('user/', v.getUserSession, name='getUserSession'),
     path('barang/', v.get_barang, name='get_barang'),
-    path('siswa/', v.get_siswa, name='get_siswa'),
     path('guru/', v.get_guru, name='get_guru'),
     path('pegawai/', v.get_pegawai, name='get_pegawai'),
     path('peminjaman/', v.get_Peminjaman, name='get_peminjaman'),
@@ -30,7 +56,4 @@ urlpatterns = [
     path('update/<str:kategori>/<str:id>/', v.detail_user, name='detail_user'),
     path("detail/update-status/", v.update_status, name="update_status"),
     path("detail/detail-update-status/", v.scan_pengembalian, name="update_status"),
-
-
-
 ]
