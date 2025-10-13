@@ -106,6 +106,8 @@
 		"svelte"
 	],
 	"dependencies": {
+		"@auth/core": "^0.41.0",
+		"@auth/sveltekit": "^1.11.0",
 		"@inlang/paraglide-js": "^2.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
@@ -117,6 +119,7 @@
 		"drizzle-orm": "^0.40.1",
 		"html5-qrcode": "^2.3.8",
 		"mode-watcher": "^1.1.0",
+		"next-auth": "^5.0.0-beta.29",
 		"pg": "^8.16.3",
 		"postgres": "^3.4.5",
 		"qrcode": "^1.5.4",

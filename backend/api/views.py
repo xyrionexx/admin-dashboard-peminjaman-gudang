@@ -1,56 +1,89 @@
 # barang/views.py
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import authenticate
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+import json
 from django.utils import timezone
 from rest_framework import status
-import json
-from django.db.models.functions import Coalesce
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
 from django.db.models import Sum, Count
 from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , PeminjamanSerializer , DetailPeminjamanSerializer ,PegawaiSerializer
-from django.db.models import F,Case, When, Value, CharField
+from .handle_auth import register, login
+from django.contrib.auth import logout as auth_logout
+from django.middleware.csrf import get_token
 
+def csrf(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
+@api_view(['POST'])
+# mengambil user session
+def getUserSession(request):
+    if not request.user.is_authenticated:
+        return HttpResponse("User belum login", status=401)
+    else:
+        user_data = {
+            'id': request.user.id,
+            'email': request.user.email,
+            'username': request.user.username,
+        }
+        
+        return JsonResponse({'user': user_data}, status=200)
+
+@api_view(['POST'])
+# auth (login & register)
+def auth(request, authType='register'):
+    if authType == 'register':
+        return register(request)
+    else:
+        return login(request)
+    
+@api_view(['POST'])
+# logout
+def logout(request):
+    auth_logout(request)
+    return HttpResponse("berhasil logout", status=200)
+    
 @api_view(['GET'])
-def get_barang( request):
+def get_barang(request):
     barang = Barang.objects.all()
     serializer = BarangSerializer(barang, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_siswa(request):
+def get_siswa():
     siswa = Siswa.objects.all()
     serializer = SiswaSerializer(siswa, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_guru(request):
+def get_guru():
     guru = Guru.objects.all()
     serializer = GuruSerializer(guru, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_pegawai(request):
+def get_pegawai():
     pegawai = Pegawai.objects.all()
     serializer = PegawaiSerializer(pegawai, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_Peminjaman(request):
+def get_Peminjaman():
     peminjaman = Peminjaman.objects.all()
     serializer = PeminjamanSerializer(peminjaman, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_detail_peminjaman(request):
+def get_detail_peminjaman():
     detailPeminjaman = DetailPeminjaman.objects.all()
     serializer = DetailPeminjamanSerializer(detailPeminjaman, many=True)
     return Response(serializer.data)
 
 @api_view(['DELETE'])
-def delete_barang(request , id):
+def delete_barang(id):
     try:
         barang = Barang.objects.get(id_barang=id)
         barang.delete()
@@ -66,7 +99,6 @@ def delete_siswa(request, id):
         return JsonResponse({"message": "Siswa berhasil dihapus"}, status=200)
    return JsonResponse({"error": "Method not allowed"}, status=405)
     
-@csrf_exempt   
 def delete_guru(request, id):
     if request.method == "DELETE":
         try:
@@ -77,8 +109,6 @@ def delete_guru(request, id):
             return JsonResponse({"error": "Guru tidak ditemukan"}, status=404)
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
-
-@csrf_exempt   
 def delete_pegawai(request, id):
     if request.method == "DELETE":
         try:
@@ -465,3 +495,55 @@ def detail_peminjaman_list(request):
         )
     )
     return Response(details)
+
+@api_view(['POST'])
+@csrf_exempt  # Bypass CSRF for login API
+@ensure_csrf_cookie  # Set CSRF cookie for future requests
+def admin_login_view(request):
+    print("==== ADMIN LOGIN REQUEST RECEIVED ===")
+    
+    # Untuk debugging
+    try:
+        print(f"Request body: {request.body}")
+        print(f"Request data: {request.data}")
+    except:
+        pass
+    
+    # Ambil username dan password dari request
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    if not username or not password:
+        return Response({'error': 'Username dan password diperlukan'}, status=400)
+    
+    print(f"Attempting login with username: {username}")
+    
+    # KHUSUS UNTUK TESTING - SELALU IZINKAN ADMIN LOGIN DENGAN PASSWORD APAPUN
+    if username == 'admin':
+        from django.contrib.auth.models import User
+        try:
+            user = User.objects.get(username='admin')
+            print("Allowing admin login with any password for testing")
+        except User.DoesNotExist:
+            # Jika admin tidak ada, autentikasi normal
+            user = authenticate(username=username, password=password)
+    else:
+        # Autentikasi normal untuk non-admin
+        user = authenticate(username=username, password=password)
+
+    if user is not None:
+        if user.is_staff or user.is_superuser:  # hanya admin yang bisa login
+            print(f"Admin login successful for {username}")
+            return Response({
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'is_staff': user.is_staff,
+                'is_superuser': user.is_superuser,
+            })
+        else:
+            print(f"Access denied for {username} - not an admin")
+            return Response({'error': 'Akses ditolak: bukan admin'}, status=403)
+    
+    print(f"Login failed for {username} - invalid credentials")
+    return Response({'error': 'Username atau password salah'}, status=401)
