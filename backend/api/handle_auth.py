@@ -67,9 +67,6 @@ def login(request):
             'errMessage': 'di input kamu ada yang salah nih...',
         }, status=400)
     
-    # membuat sesi pengguna
-    auth_login(request, user)
-
     if remember_me:
         request.session.set_expiry(30 * 24 * 60 * 60) # set remember_me selama 30 hari
         
@@ -77,12 +74,10 @@ def login(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     
-    # Simpan token di session
-    request.session['jwt_token'] = access_token
-    request.session.save()
-
     return JsonResponse({
-        'id': request.user.id,
-        'username': request.user.username,
-        'email': request.user.email
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'access': access_token,
+        'refresh': str(refresh)
     }, status=200)

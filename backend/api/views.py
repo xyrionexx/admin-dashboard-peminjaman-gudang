@@ -12,6 +12,8 @@ from .handle_auth import register, login
 from django.contrib.auth import logout
 from django.middleware.csrf import get_token
 
+# get csrf token
+@api_view(['GET'])
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
