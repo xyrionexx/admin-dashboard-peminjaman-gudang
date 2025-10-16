@@ -9,27 +9,18 @@ from .models import Barang,Siswa,Guru,Peminjaman,DetailPeminjaman ,Pegawai
 from django.db.models import Sum, Count
 from .serializers import BarangSerializer , SiswaSerializer , GuruSerializer , PeminjamanSerializer , DetailPeminjamanSerializer ,PegawaiSerializer
 from .handle_auth import register, login
-from django.contrib.auth import logout
-from django.middleware.csrf import get_token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from rest_framework.decorators import authentication_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# get csrf token
 @api_view(['GET'])
-def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
-
-@api_view(['POST'])
-# mengambil user session
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def getUserSession(request):
-    if not request.user.is_authenticated:
-        return HttpResponse("User belum login", status=401)
-    else:
-        user_data = {
-            'id': request.user.id,
-            'email': request.user.email,
-            'username': request.user.username,
-        }
-        
-        return JsonResponse({'user': user_data}, status=200)
+    return JsonResponse({
+        "isAuthenticated": True
+    }, status=200)
 
 @api_view(['POST'])
 # auth (login & register)
@@ -37,14 +28,7 @@ def auth(request, authType='register'):
     if authType == 'register':
         return register(request)
     else :
-        return login(request)
-    
-@api_view(['POST'])
-# logout
-def logOut(request):
-    logout(request)
-    HttpResponse("berhasil logout", status=200)
-    
+        return login(request)  
 
 @api_view(['GET'])
 def get_barang():

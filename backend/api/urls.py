@@ -5,10 +5,8 @@ urlpatterns = [
     # autentikasi
     path('register/', v.auth, {'authType': 'register'}, name='register'),
     path('login/', v.auth, {'authType': 'login'}, name='login'),
-    path('logout/', v.logout, name='logout'),
 
     # ambil data
-    path('csrf/', v.csrf),
     path('user/', v.getUserSession, name='getUserSession'),
     path('barang/', v.get_barang, name='get_barang'),
     path('siswa/', v.get_siswa, name='get_siswa'),
